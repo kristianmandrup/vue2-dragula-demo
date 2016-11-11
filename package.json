@@ -10,10 +10,12 @@
     "unit": "karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
+    "fix": "standard --fix",
     "lint": "eslint --fix --ext .js,.vue src test/unit/specs test/e2e/specs",
-    "lint:fix": "eslint --fix --ext .js,.vue src test/unit/specs test/e2e/specs"
+    "lint:fix": "eslint --fix .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "standard": "^8.5.0",
     "vue": "^2.0.1",
     "vue-dragula": "kristianmandrup/vue-dragula#refactor"
   },

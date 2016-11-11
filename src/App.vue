@@ -8,7 +8,10 @@
             <div v-for="text in colOne" @click="onClick">{{text}} [click me]</div>
           </div>
           <div class="container" v-dragula="colTwo" bag="first-bag">
-            <div v-for="text in colTwo">{{text}}</div>
+            <div v-for="text in colTwo">
+              <span class="handle">+</span>
+              <span>{{text}}</text>
+            </div>
           </div>
         </div>
         <pre>
@@ -106,18 +109,40 @@ export default {
       // you should also be able to do: this.$dragula
       this.$dragula.eventBus.$on(
         'drop',
-        function (args) {
-          console.log('drop: ' + args[0])
+        function (el, container, handle) {
+          console.log('drop: ', el, container, handle)
           console.log(this.categories)
         }
       )
       this.$dragula.eventBus.$on(
         'dropModel',
-        function (args) {
-          console.log('dropModel: ' + args)
+        function (el, container, handle) {
+          console.log('dropModel: ', el, container, handle)
           console.log(this.categories)
         }
       )
+
+      // this.$dragula.eventBus.$on(
+      //   'accepts',
+      //   function (el, target) {
+      //     console.log('accepts: ', el, target)
+      //     return true // target !== document.getElementById(left)
+      //   }
+      // )
+
+      // this.$dragula.on('drag', function (el, container, handle) {
+      //   console.log('drag: ', el, container, handle)
+      //   el.className = el.className.replace('ex-moved', '')
+      // }).on('drop', function (el, container, handle) {
+      //   console.log('drop: ', el, container, handle)
+      //   el.className += ' ex-moved'
+      // }).on('over', function (el, container, handle) {
+      //   console.log('over: ', el, container, handle)
+      //   container.className += ' ex-over'
+      // }).on('out', function (el, container, handle) {
+      //   console.log('out: ', el, container, handle)
+      //   container.className = container.className.replace('ex-over', '')
+      // })
     })
   },
   methods: {
@@ -143,6 +168,17 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+[bag] >:hover {
+  border: 2px solid black
+}
+
+.handle {
+    padding: 0 5px;
+    margin-right: 5px;
+    background-color: rgba(0, 0, 0, 0.4);
+    cursor: move;
 }
 
 body {
