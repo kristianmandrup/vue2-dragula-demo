@@ -20,12 +20,12 @@
         <h4>Result</h5>
         <p>
           <h5>colOne</h5>
-          {{colOne | json}}
+          {{ colOne }}
         </p>
 
         <p>
           <h5>colTwo</h5>
-          {{colTwo | json}}
+          {{ colTwo }}
         </p>
       </div>
     </div>

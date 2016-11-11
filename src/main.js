@@ -3,6 +3,8 @@ import App from './App'
 
 import VueDragula from 'vue-dragula'
 
+require('../static/styles.css')
+
 Vue.config.debug = true
 
 Vue.use(VueDragula)
