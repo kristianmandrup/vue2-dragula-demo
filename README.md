@@ -4,8 +4,9 @@
 
 ### Status: WIP
 
-Currently using this vue-dragula [refactor]("vue-dragula": "kristianmandrup/vue-dragula#refactor") branch while try to get the example app to 
-FUCKIN WORK!!!
+Currently using this vue-dragula [refactor]("vue-dragula": "kristianmandrup/vue-dragula#refactor") branch.
+
+Works, but the styling is a bit off and could not yet figure out how to port the `| json` filters for Vue 2.x
 
 ## Build Setup
 
