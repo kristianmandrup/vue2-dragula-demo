@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import Hello from './components/Hello'
+import Vue from 'vue'
 
 export default {
   name: 'app',
@@ -93,17 +93,17 @@ export default {
   created () {
     console.log(Vue, Vue.prototype)
 
-    Vue.$dragula.options('third-bag', {
+    this.$dragula.options('third-bag', {
       copy: true
     })
   },
   // See https://vuejs.org/v2/guide/instance.html#Instance-Lifecycle-Hooks
   mounted () {
-    console.log('Mounted')    
+    console.log('Mounted')
     this.$nextTick(() => {
       console.log('Comfig $dragula.eventBus', this.$dragula.eventBus)
       // since $dragula in on Vue.prototype which all Components inherit from
-      // you should also be able to do: this.$dragula  
+      // you should also be able to do: this.$dragula
       this.$dragula.eventBus.$on(
         'drop',
         function (args) {

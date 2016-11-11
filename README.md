@@ -1,6 +1,11 @@
-# xdragula
+# Dragula for Vue2 via vue-dragula
 
-> A Vue.js project
+> A Vue.js demo app to demonstrate how to use [Dragula](https://bevacqua.github.io/dragula/) with [Vue 2.x](https://vuex.vuejs.org) for drag and drop.
+
+### Status: WIP
+
+Currently using this vue-dragula [refactor]("vue-dragula": "kristianmandrup/vue-dragula#refactor") branch while try to get the example app to 
+FUCKIN WORK!!!
 
 ## Build Setup
 
