@@ -210,6 +210,31 @@ directives: {
 }
 ```
 
+If I'm not mistaken, the problem is that ther is ONE global `DragulaService` shared by `$dragula` on each component instance.
+Each component can then have multiple directives who each use $dragula of the component and thus the global service.
+
+### Redesign proposal
+
+Perhaps we could have an API where `$dragula` can be used to `create` an new service with it's own `eventBus`, a set of `bags` and
+event handlers for events on that bus.
+
+```js
+let serviceTwo = this.$dragula.create({bags: ['second-bag']}).on({
+  drop (el, container) {
+    console.log('drop: ', el, container)
+  }
+  ...
+})
+
+let serviceThree = this.$dragula.create({bags: ['third-bag']}).on({
+  drop (el, container) {
+    console.log('drop: ', el, container)
+  }
+  ...
+})
+
+```
+
 ### Design
 
 Adding handles
