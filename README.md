@@ -7,6 +7,9 @@
 Currently using this vue-dragula [refactor]("vue-dragula": "kristianmandrup/vue-dragula#refactor") branch.
 See more in [[Design]] section below.
 
+Please see my note in this [PR](https://github.com/Astray-git/vue-dragula/pull/26) and let's work togehte to better grasp
+how to use Dragula with Vue2. Cheers!
+
 ## Build Setup
 
 ``` bash

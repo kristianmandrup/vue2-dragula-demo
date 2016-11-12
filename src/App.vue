@@ -44,20 +44,6 @@
         <button @click="testModify">Modify Items</button>
       </div>
     </div>
-
-    <div class="examples" id="examples-3">
-      <div class="parent">
-        <label>Copy between containers</label>
-        <div class="wrapper">
-          <div class="container" v-dragula="copyOne" bag="third-bag">
-            <div v-for="text in copyOne" track-by="$index">{{text}}</div>
-          </div>
-          <div class="container" v-dragula="copyTwo" bag="third-bag">
-            <div v-for="text in copyTwo" track-by="$index">{{text}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </section>
 </template>
 
@@ -109,6 +95,24 @@ export default {
         copy: true
       })
 
+      // this.$dragula returns an instance of the DragulaService, whichhas the following:
+    // this.bags = [] // bag store
+    // this.eventBus = new Vue()
+    // this.events = [
+    //   'cancel',
+    //   'cloned',
+    //   'drag',
+    //   'dragend',
+    //   'drop',
+    //   'out',
+    //   'over',
+    //   'remove',
+    //   'shadow',
+    //   'dropModel',
+    //   'removeModel'
+    // ]
+
+
       console.log('Comfig $dragula.eventBus', this.$dragula.eventBus)
       // since $dragula in on Vue.prototype which all Components inherit from
       // you should also be able to do: this.$dragula
@@ -127,13 +131,21 @@ export default {
         }
       )
 
-      // this.$dragula.eventBus.$on(
-      //   'accepts',
-      //   function (el, target) {
-      //     console.log('accepts: ', el, target)
-      //     return true // target !== document.getElementById(left)
-      //   }
-      // )
+      this.$dragula.eventBus.$on(
+        'accepts',
+        function (el, target) {
+          console.log('accepts: ', el, target)
+          return true // target !== document.getElementById(left)
+        }
+      )
+
+      this.$dragula.eventBus.$on(
+        'drag',
+        function (el, container) {
+          console.log('drag: ', el, container)
+          // el.className = el.className.replace('ex-moved', '')
+        }
+      )
 
       // this.$dragula.on('drag', function (el, container, handle) {
       //   console.log('drag: ', el, container, handle)
