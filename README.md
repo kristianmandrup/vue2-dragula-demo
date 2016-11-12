@@ -198,6 +198,18 @@ WTF!!! Still getting `Error: Bag named: "third-bag" already exists.`
 Yes, the whole problem seems to be that there is only one global `DragulaService`.
 Needs a redesign to be service per directive instantiation!!
 
+Perhaps we just need to use a component level directive?
+
+If you want to register a directive locally instead, components also accept a directives option:
+
+```js
+directives: {
+  focus: {
+    // directive definition
+  }
+}
+```
+
 ### Design
 
 Adding handles
