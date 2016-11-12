@@ -219,20 +219,42 @@ Perhaps we could have an API where `$dragula` can be used to `create` an new ser
 event handlers for events on that bus.
 
 ```js
-let serviceTwo = this.$dragula.create({bags: ['second-bag']}).on({
+
+let customContainer = document.getElementById('left-container')
+let serviceTwo = this.$dragula.create({
+  containers: ['colOne', 'colTwo', customContainer],
+  bags: ['second-bag']
+}).on({
   drop (el, container) {
     console.log('drop: ', el, container)
   }
   ...
 })
 
-let serviceThree = this.$dragula.create({bags: ['third-bag']}).on({
+let serviceThree = this.$dragula.create({
+  containers: ['copyOne'],
+  bags: ['third-bag']
+}).on({
   drop (el, container) {
     console.log('drop: ', el, container)
   }
   ...
 })
+```
 
+In our directive, `bind` has access to the context (ie. container component) via the `vnode` argument and hence
+[vnode.context](https://github.com/vuejs/vue/blob/dev/src/core/vdom/vnode.js#L10)
+
+```
+Vue.directive('dragula', {
+	    params: ['bag'],
+	    bind: function bind(container, binding, vnode) {
+```
+
+We could have the element with the directive register with a `$dragula` `DragulaService` of that name.
+
+```js
+console.log('can bind to $dragula', name, vnode.context.$dragula)
 ```
 
 ### Design
