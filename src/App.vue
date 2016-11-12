@@ -44,6 +44,21 @@
         <button @click="testModify">Modify Items</button>
       </div>
     </div>
+
+    <!--<div class="examples" id="examples-3">
+      <div class="parent">
+        <label for="hy">Copying stuff is common too, so we made it easy for you.</label>
+        <div class="wrapper">
+          <div id="left-copy" class="container" v-dragula="copyOne" bag="third-bag">
+            <div v-for="text of copyOne">{{ text }}</div>
+          </div>
+          <div id="right-copy" class="container" v-dragula="copyTwo" bag="third-bag">
+            <div v-for="text of copyTwo">{{ text }}</div>
+          </div>
+        </div>
+      </div>
+    </div>-->
+
   </section>
 </template>
 
@@ -91,27 +106,10 @@ export default {
         console.error('this.$dragula is not available from Vue.prototype')
         throw new Error('this.$dragula is not available from Vue.prototype')
       }
-      this.$dragula.options('third-bag', {
-        copy: true
-      })
 
-      // this.$dragula returns an instance of the DragulaService, whichhas the following:
-    // this.bags = [] // bag store
-    // this.eventBus = new Vue()
-    // this.events = [
-    //   'cancel',
-    //   'cloned',
-    //   'drag',
-    //   'dragend',
-    //   'drop',
-    //   'out',
-    //   'over',
-    //   'remove',
-    //   'shadow',
-    //   'dropModel',
-    //   'removeModel'
-    // ]
-
+      // this.$dragula.options('third-bag', {
+      //   copy: true
+      // })
 
       console.log('Comfig $dragula.eventBus', this.$dragula.eventBus)
       // since $dragula in on Vue.prototype which all Components inherit from
