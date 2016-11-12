@@ -3301,6 +3301,14 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
+kristianmandrup/vue-dragula#refactor:
+  name vue-dragula
+  version "2.0.0"
+  resolved "https://codeload.github.com/kristianmandrup/vue-dragula/tar.gz/2dbe65d0faf2c7edac705332ffdab09dc696866d"
+  dependencies:
+    dragula "3.7.2"
+    lodash.merge "^4.6.0"
+
 lazy-cache@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-1.0.4.tgz#a1d78fc3a50474cb80845d3b3b6e1da49a446e8e"

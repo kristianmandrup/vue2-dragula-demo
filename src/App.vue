@@ -94,16 +94,21 @@ export default {
     }
   },
   created () {
-    console.log(Vue, Vue.prototype)
-
-    this.$dragula.options('third-bag', {
-      copy: true
-    })
   },
   // See https://vuejs.org/v2/guide/instance.html#Instance-Lifecycle-Hooks
   mounted () {
     console.log('Mounted')
     this.$nextTick(() => {
+      console.log(Vue.$dragula, Vue.prototype)
+
+      if (!this.$dragula) {
+        console.error('this.$dragula is not available from Vue.prototype')
+        throw new Error('this.$dragula is not available from Vue.prototype')
+      }
+      this.$dragula.options('third-bag', {
+        copy: true
+      })
+
       console.log('Comfig $dragula.eventBus', this.$dragula.eventBus)
       // since $dragula in on Vue.prototype which all Components inherit from
       // you should also be able to do: this.$dragula
