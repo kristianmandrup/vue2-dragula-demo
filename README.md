@@ -222,8 +222,7 @@ event handlers for events on that bus.
 
 let customContainer = document.getElementById('left-container')
 let serviceTwo = this.$dragula.create({
-  containers: ['colOne', 'colTwo', customContainer],
-  bags: ['second-bag']
+  containers: ['colOne', 'colTwo', {'left-container': customContainer}],
 }).on({
   drop (el, container) {
     console.log('drop: ', el, container)
@@ -233,7 +232,6 @@ let serviceTwo = this.$dragula.create({
 
 let serviceThree = this.$dragula.create({
   containers: ['copyOne'],
-  bags: ['third-bag']
 }).on({
   drop (el, container) {
     console.log('drop: ', el, container)
@@ -256,6 +254,71 @@ We could have the element with the directive register with a `$dragula` `Dragula
 ```js
 console.log('can bind to $dragula', name, vnode.context.$dragula)
 ```
+
+### Redesign Attempt 1
+
+Add `create` method on `$dragula` which can create a Hash of services for each container
+
+```js
+Vue.prototype.$dragula = {
+  options: service.setOptions.bind(service),
+  find: service.find.bind(service),
+  eventBus: service.eventBus,
+
+  create: function(serviceOpts = {}) {
+    this.services = this.service || {};
+    let containers = serviceOpts.containers || []
+    let bags = serviceOpts.bags || []
+
+    for (let container of containers) {
+      let name = container
+      let service = new DragulaService({
+        name,
+        eventBus,
+        bags
+      })
+      this.services[name] = service
+    }
+    return this
+  },
+  allOn: function(handlerConfig = {}) {
+    let services = Object.values(this.services)
+    for (let service of services) {
+      service.on(handlerConfig)
+    }
+  },
+  // allow specifying individual handlers on particular servic
+  service: function(name) {
+    return this.services[name]
+  }
+}
+```
+
+Let `bind` try to register on component DragulaService instance of container name specififed by expression value of `v-dragula` directive
+
+```js
+bind: function bind(container, binding, vnode) {
+  // first try to register on DragulaService of component
+  let $dragulaOfComponent = vnode.context.$dragula
+  if ($dragulaOfComponent) {
+    containerName = binding.expression
+
+    drake = dragula({
+      containers: [container]
+    })
+
+    let containerService = $dragulaOfComponent.services[containerName]
+
+    if (containerService) {
+      containerService.add(name, drake)
+      containerService.handleModels(name, drake)
+      return
+    }
+  }
+```
+
+See [dev branch](https://github.com/kristianmandrup/vue-dragula/tree/dev) for the current attempt
+at implementing the above redesign/extension.
 
 ### Design
 
