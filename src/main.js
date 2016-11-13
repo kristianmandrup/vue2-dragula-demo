@@ -5,7 +5,7 @@ import VueDragula from 'vue-dragula'
 
 Vue.config.debug = true
 
-Vue.use(VueDragula)
+Vue.use(VueDragula, {logging: true})
 
 /* eslint-disable no-new */
 new Vue({

@@ -1,14 +1,10 @@
 # Dragula for Vue2 via vue-dragula
 
-> A Vue.js demo app to demonstrate how to use [Dragula](https://bevacqua.github.io/dragula/) with [Vue 2.x](https://vuex.vuejs.org) for drag and drop.
+> A Vue.js demo app to demonstrate how to use [Dragula](https://bevacqua.github.io/dragula/) with [Vue 2](https://vuex.vuejs.org) for drag and drop.
 
 ### Status: WIP
 
-Currently using this vue-dragula [refactor]("vue-dragula": "kristianmandrup/vue-dragula#refactor") branch.
-See more in [[Design]] section below.
-
-Please see my note in this [PR](https://github.com/Astray-git/vue-dragula/pull/26) and let's work togehte to better grasp
-how to use Dragula with Vue2. Cheers!
+Currently using this vue-dragula [dev]("vue-dragula": "kristianmandrup/vue-dragula#dev") branch. See more in sections below.
 
 ## Build Setup
 
@@ -34,10 +30,11 @@ npm test
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
-
 ### Dragula
 
-Note that when instantiating dragula, you can pass a host of options:
+Note that when instantiating dragula, you can pass a host of options. These options can be passed to `drake` instances of each service.
+
+*TODO:* Perhaps add a way to pass a custom `dragula` factory method in [vue-dragula](https://github.com/kristianmandrup/vue-dragula/tree/dev). Currently hard coded to only create with a single container.
 
 ```js
 dragula(containers, {
@@ -63,266 +60,48 @@ dragula(containers, {
 });
 ```
 
-Initializing dragula with custom options:
+### Using v-dragula directive
 
-```js
-const myDragulaOptions = {
-  accepts: function (el, target, source, sibling) {
-    return true; // elements can be dropped in any of the `containers` by default
-  }
-}
-
-Vue.use(VueDragula, myDragulaOptions)
-```
-
-Currently you can only have one Dragula instance per application. It needs a redesign!
-
-### DragulaService
-
-The plugin is instantiated with a `DragulaService` singleton, which contains:
-
-```
-  this.bags = [] // bag store
-  this.eventBus = new Vue()
-  this.events = [
-    'cancel',
-    'cloned',
-    'drag',
-    'dragend',
-    'drop',
-    'out',
-    'over',
-    'remove',
-    'shadow',
-    'dropModel',
-    'removeModel'
-  ]
-```
-
-Add events to the `eventBus` as follows
-
-```js
-  this.$dragula.eventBus.$on(
-    'drop',
-    function (el, container) {
-      console.log('drop: ', el, container)
-      console.log(this.categories)
-    }
-  )
-```
-
-When `vue-dragula` is bound to the app, it will find elements with the data attribute `bag` ie.
-
-```html
-<div class="container" v-dragula="colOne" bag="first-bag">...</div>
-```
-
-Which will be added to the `bags` of the service. It will error if a bag of that name is already registered.
-I sadly have no idea yet how to design this better, as I don't yet understand Dragula. Please chip in!
-
-From the [Dragula docs on containers](https://github.com/bevacqua/dragula#dragulacontainers-options)
-
-By default, dragula will allow the user to drag an element in any of the containers and drop it in any other container in the list.
-If the element is dropped anywhere that's not one of the containers, the event will be gracefully cancelled according to the
-`revertOnSpill` and `removeOnSpill` options.
-
-You can omit the containers argument and add containers dynamically later on.
-
-```js
-var drake = dragula({
-  copy: true
-});
-drake.containers.push(container);
-```
-
-You can also set the containers from the options object.
-
-```
-var drake = dragula({ containers: containers });
-```
-
-I have a feeling that a bag is a container? and that using the `bag` attribute to mark a container is simply a
-more convenient way than using document selectors:
-
-"...allows the user to drag elements from left into right, and from right into left."
-
-```js
-dragula([document.querySelector('#left'), document.querySelector('#right')]);
-```
-
-But now I see that dragula is a directive:
-
-```js
-  Vue.directive('dragula', {
-    params: ['bag'],
-```
-
-So the rule must be that every `dragula` directive instance, has a set of unique `bag` names (containers to drag between).
-Which is why this works:
-
-```html
-  <div class="container" v-dragula="colOne" bag="first-bag">
-    <div v-for="text in colOne" @click="onClick">{{text}} [click me]</div>
-  </div>
-  <div class="container" v-dragula="colTwo" bag="first-bag">
-    <div v-for="text in colTwo">
-      <span class="handle">+</span>
-      <span>{{text}}</text>
-    </div>
-  </div>
-```
-
-Since we have `v-dragula="colOne" bag="first-bag"` and `v-dragula="colTwo"` bag="first-bag"`.
-So this should work:
-
-```js
-this.$dragula.options('third-bag', {
-  copy: true
-})
-```
-
-Using `copyOne` and `copyTwo` directive instances. But I guess they share the same service!?
-WTF!!! Still getting `Error: Bag named: "third-bag" already exists.`
+Use the `v-dragula` directive on an element to point to an underlying model data model (ie. an `Array`) in the VM. Use the `service` attribute to target a registered `DragulaService` and the `drake` attribute to define which named drake configuration to use for that service.
 
 ```html
 <div class="wrapper">
-  <div id="left-copy" class="container" v-dragula="copyOne" bag="third-bag">
-    <div v-for="text of copyOne">{{ text }}</div>
+  <div class="container" v-dragula="colOne" drake="first">
+    <div v-for="text in colOne" @click="onClick">{{text}} [click me]</div>
   </div>
-  <div id="right-copy" class="container" v-dragula="copyTwo" bag="third-bag">
-    <div v-for="text of copyTwo">{{ text }}</div>
+  <div class="container" v-dragula="colTwo" drake="first">
+    <div v-for="text in colTwo">{{text}}</div>
   </div>
 </div>
 ```
 
-Yes, the whole problem seems to be that there is only one global `DragulaService`.
-Needs a redesign to be service per directive instantiation!!
+### Dragula Service pre-configuration
 
-Perhaps we just need to use a component level directive?
-
-If you want to register a directive locally instead, components also accept a directives option:
+Please Pre-configure named services with named drakes in the `created` life cycle hook method ofthe VM.
 
 ```js
-directives: {
-  focus: {
-    // directive definition
-  }
+created () {
+  let myService = this.$dragula.create({
+    name: 'my-service',
+    drakes: {
+      first: {
+        copy: true,
+      }
+    }
+  })
+
+  myService.on({
+    drop: (el, container) => {
+      console.log('drop: ', el, container)
+    }
+    ...
+  })
 }
 ```
 
-If I'm not mistaken, the problem is that ther is ONE global `DragulaService` shared by `$dragula` on each component instance.
-Each component can then have multiple directives who each use $dragula of the component and thus the global service.
+### Styling
 
-### Redesign proposal
-
-Perhaps we could have an API where `$dragula` can be used to `create` an new service with it's own `eventBus`, a set of `bags` and
-event handlers for events on that bus.
-
-```js
-
-let customContainer = document.getElementById('left-container')
-let serviceTwo = this.$dragula.create({
-  containers: ['colOne', 'colTwo', {'left-container': customContainer}],
-}).on({
-  drop (el, container) {
-    console.log('drop: ', el, container)
-  }
-  ...
-})
-
-let serviceThree = this.$dragula.create({
-  containers: ['copyOne'],
-}).on({
-  drop (el, container) {
-    console.log('drop: ', el, container)
-  }
-  ...
-})
-```
-
-In our directive, `bind` has access to the context (ie. container component) via the `vnode` argument and hence
-[vnode.context](https://github.com/vuejs/vue/blob/dev/src/core/vdom/vnode.js#L10)
-
-```
-Vue.directive('dragula', {
-	    params: ['bag'],
-	    bind: function bind(container, binding, vnode) {
-```
-
-We could have the element with the directive register with a `$dragula` `DragulaService` of that name.
-
-```js
-console.log('can bind to $dragula', name, vnode.context.$dragula)
-```
-
-### Redesign Attempt 1
-
-Add `create` method on `$dragula` which can create a Hash of services for each container
-
-```js
-Vue.prototype.$dragula = {
-  options: service.setOptions.bind(service),
-  find: service.find.bind(service),
-  eventBus: service.eventBus,
-
-  create: function(serviceOpts = {}) {
-    this.services = this.service || {};
-    let containers = serviceOpts.containers || []
-    let bags = serviceOpts.bags || []
-
-    for (let container of containers) {
-      let name = container
-      let service = new DragulaService({
-        name,
-        eventBus,
-        bags
-      })
-      this.services[name] = service
-    }
-    return this
-  },
-  allOn: function(handlerConfig = {}) {
-    let services = Object.values(this.services)
-    for (let service of services) {
-      service.on(handlerConfig)
-    }
-  },
-  // allow specifying individual handlers on particular servic
-  service: function(name) {
-    return this.services[name]
-  }
-}
-```
-
-Let `bind` try to register on component DragulaService instance of container name specififed by expression value of `v-dragula` directive
-
-```js
-bind: function bind(container, binding, vnode) {
-  // first try to register on DragulaService of component
-  let $dragulaOfComponent = vnode.context.$dragula
-  if ($dragulaOfComponent) {
-    containerName = binding.expression
-
-    drake = dragula({
-      containers: [container]
-    })
-
-    let containerService = $dragulaOfComponent.services[containerName]
-
-    if (containerService) {
-      containerService.add(name, drake)
-      containerService.handleModels(name, drake)
-      return
-    }
-  }
-```
-
-See [dev branch](https://github.com/kristianmandrup/vue-dragula/tree/dev) for the current attempt
-at implementing the above redesign/extension.
-
-### Design
-
-Adding handles
+Add handles
 
 ```js
 .handle {
@@ -333,48 +112,47 @@ Adding handles
 }
 ```
 
-Black border on `:hover`
+Add a black border effect on `:hover` over draggable child elements of a `drake` container
 
 ```js
-[bag] >:hover {
+[drake] >:hover {
   border: 2px solid black
 }
 ```
 
-### More event handlers
+### UX effects via event handlers
 
-Note: We are also adding classes on target element in these examples.
+Add/Remove DOM element style classes as UX effects for drag'n drop events
 
 ```js
-// if we accept
-this.$dragula.eventBus.$on(
-  'accepts',
-  function (el, target) {
+service.on({
+  accepts: (el, target) => {
     console.log('accepts: ', el, target)
     return true // target !== document.getElementById(left)
+  },
+  drag: (el, container) => {
+    console.log('drag: ', el, container)
+    el.className = el.className.replace('ex-moved', '')
+  },
+  drop: (el, container) => {
+    console.log('drop: ', el, container)
+    el.className += ' ex-moved'
+  },
+  over: (el, container) => {
+    console.log('over: ', el, container)
+    container.className += ' ex-over'
+  },
+  out: (el, container) => {
+    console.log('out: ', el, container, handle)
+    container.className = container.className.replace('ex-over', '')
   }
-)
-
-// when we start dragging
-this.$dragula.on('drag', function (el, container, handle) {
-  console.log('drag: ', el, container, handle)
-  el.className = el.className.replace('ex-moved', '')
-})
-// when we drop
-.on('drop', function (el, container, handle) {
-  console.log('drop: ', el, container, handle)
-  el.className += ' ex-moved'
-})
-
-/// when we are over
-.on('over', function (el, container, handle) {
-  console.log('over: ', el, container, handle)
-  container.className += ' ex-over'
-})
-
-// when we are leaving
-.on('out', function (el, container, handle) {
-  console.log('out: ', el, container, handle)
-  container.className = container.className.replace('ex-over', '')
 })
 ```
+
+Let us know if this demo helps you and what you build with this example as your foundation. Feel free to improve :)
+
+**Enjoy!!!**
+
+## License
+
+MIT

@@ -4,22 +4,16 @@
       <div class="parent">
         <label>Move stuff between these two containers. Note how the stuff gets inserted near the mouse pointer? Great stuff.</label>
         <div class="wrapper">
-          <div class="container" v-dragula="colOne" bag="first-bag">
+          <div class="container" v-dragula="colOne" drake="first">
             <div v-for="text in colOne" @click="onClick">{{text}} [click me]</div>
           </div>
-          <div class="container" v-dragula="colTwo" bag="first-bag">
+          <div class="container" v-dragula="colTwo" drake="first">
             <div v-for="text in colTwo">
               <span class="handle">+</span>
               <span>{{text}}</text>
             </div>
           </div>
         </div>
-        <pre>
-          <code>
-            &lt;div v-dragula=&quot;colOne&quot; bag=&quot;first-bag&quot;&gt;&lt;/div&gt;
-            &lt;div v-dragula=&quot;colTwo&quot; bag=&quot;first-bag&quot;&gt;&lt;/div&gt;
-          </code>
-        </pre>
         <h4>Result</h5>
         <p>
           <h5>colOne</h5>
@@ -35,9 +29,9 @@
 
     <div class="examples" id="examples-2">
       <div class="parent">
-        <label>Modify items in dragula bag  with transition</label>
+        <label>Modify items in drake with transition</label>
         <div class="wrapper" v-for="container in categories">
-          <div class="container" v-dragula="container" bag="second-bag">
+          <div class="container" v-dragula="container" drake="second">
             <div v-for="number in container" transition="scale">{{number}}</div>
           </div>
         </div>
@@ -45,20 +39,19 @@
       </div>
     </div>
 
-    <!--<div class="examples" id="examples-3">
+    <div class="examples" id="examples-3">
       <div class="parent">
-        <label for="hy">Copying stuff is common too, so we made it easy for you.</label>
+        <label>Copy between containers</label>
         <div class="wrapper">
-          <div id="left-copy" class="container" v-dragula="copyOne" bag="third-bag">
-            <div v-for="text of copyOne">{{ text }}</div>
+          <div class="container" v-dragula="copyOne" drake="third">
+            <div v-for="text in copyOne" track-by="$index">{{text}}</div>
           </div>
-          <div id="right-copy" class="container" v-dragula="copyTwo" bag="third-bag">
-            <div v-for="text of copyTwo">{{ text }}</div>
+          <div class="container" v-dragula="copyTwo" drake="third">
+            <div v-for="text in copyTwo" track-by="$index">{{text}}</div>
           </div>
         </div>
       </div>
-    </div>-->
-
+    </div>
   </section>
 </template>
 
@@ -95,22 +88,16 @@ export default {
     }
   },
   created () {
+    console.log(Vue, Vue.prototype)
+
+    this.$dragula.options('third', {
+      copy: true
+    })
   },
   // See https://vuejs.org/v2/guide/instance.html#Instance-Lifecycle-Hooks
   mounted () {
     console.log('Mounted')
     this.$nextTick(() => {
-      console.log(Vue.$dragula, Vue.prototype)
-
-      if (!this.$dragula) {
-        console.error('this.$dragula is not available from Vue.prototype')
-        throw new Error('this.$dragula is not available from Vue.prototype')
-      }
-
-      // this.$dragula.options('third-bag', {
-      //   copy: true
-      // })
-
       console.log('Comfig $dragula.eventBus', this.$dragula.eventBus)
       // since $dragula in on Vue.prototype which all Components inherit from
       // you should also be able to do: this.$dragula
@@ -136,33 +123,11 @@ export default {
           return true // target !== document.getElementById(left)
         }
       )
-
-      this.$dragula.eventBus.$on(
-        'drag',
-        function (el, container) {
-          console.log('drag: ', el, container)
-          // el.className = el.className.replace('ex-moved', '')
-        }
-      )
-
-      // this.$dragula.on('drag', function (el, container, handle) {
-      //   console.log('drag: ', el, container, handle)
-      //   el.className = el.className.replace('ex-moved', '')
-      // }).on('drop', function (el, container, handle) {
-      //   console.log('drop: ', el, container, handle)
-      //   el.className += ' ex-moved'
-      // }).on('over', function (el, container, handle) {
-      //   console.log('over: ', el, container, handle)
-      //   container.className += ' ex-over'
-      // }).on('out', function (el, container, handle) {
-      //   console.log('out: ', el, container, handle)
-      //   container.className = container.className.replace('ex-over', '')
-      // })
     })
   },
   methods: {
     onClick () {
-      console.log(this.$dragula.find('first-bag'))
+      console.log(this.$dragula.find('first'))
       window.alert('click event')
     },
     testModify () {
@@ -185,7 +150,7 @@ export default {
   margin-top: 60px;
 }
 
-[bag] >:hover {
+[drake] >:hover {
   border: 2px solid black
 }
 
