@@ -89,45 +89,25 @@ export default {
   },
   created () {
     console.log(Vue, Vue.prototype)
+    let service = this.$dragula.$service
 
-    this.$dragula.options('third', {
+    // IMPORTANT!! setup empty named drakes matching 
+    // directive drake configs in template
+    // otherwise may (currently) result in conflict
+
+    service.options('first', {
+    })
+
+    service.options('second', {
+    })
+
+    service.options('third', {
       copy: true
     })
-  },
-  // See https://vuejs.org/v2/guide/instance.html#Instance-Lifecycle-Hooks
-  mounted () {
-    console.log('Mounted')
-    this.$nextTick(() => {
-      console.log('Comfig $dragula.eventBus', this.$dragula.eventBus)
-      // since $dragula in on Vue.prototype which all Components inherit from
-      // you should also be able to do: this.$dragula
-      this.$dragula.eventBus.$on(
-        'drop',
-        function (el, container, handle) {
-          console.log('drop: ', el, container, handle)
-          console.log(this.categories)
-        }
-      )
-      this.$dragula.eventBus.$on(
-        'dropModel',
-        function (el, container, handle) {
-          console.log('dropModel: ', el, container, handle)
-          console.log(this.categories)
-        }
-      )
 
-      this.$dragula.eventBus.$on(
-        'accepts',
-        function (el, target) {
-          console.log('accepts: ', el, target)
-          return true // target !== document.getElementById(left)
-        }
-      )
-    })
   },
   methods: {
     onClick () {
-      console.log(this.$dragula.find('first'))
       window.alert('click event')
     },
     testModify () {

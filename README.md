@@ -6,6 +6,10 @@
 
 Currently using this vue-dragula [dev]("vue-dragula": "kristianmandrup/vue-dragula#dev") branch. See more in sections below.
 
+### TODO
+
+Refactor and upgrade to use latest API
+
 ## Build Setup
 
 ``` bash
