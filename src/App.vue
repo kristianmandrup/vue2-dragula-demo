@@ -32,6 +32,13 @@
               <md-icon>favorite</md-icon>
             </router-link>
           </md-button>
+
+          <md-button class="md-icon-button">
+            <router-link :to="{ name: 'model'}">
+              <md-tooltip md-direction="top">Model Manager with Time Travel</md-tooltip>
+              <md-icon>alarm</md-icon>
+            </router-link>
+          </md-button>
         </div>
       </md-toolbar>
     </nav>

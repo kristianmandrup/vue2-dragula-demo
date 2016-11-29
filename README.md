@@ -2,7 +2,7 @@
 
 > A Vue.js demo app to demonstrate how to use [Dragula](https://bevacqua.github.io/dragula/) with [Vue 2](https://vuex.vuejs.org) for drag and drop.
 
-### Status: WIP
+### Status
 
 Demo app which demonstrates how to use the new [vue2-dragula](https://github.com/kristianmandrup/vue2-dragula) plugin.
 See more info in plugin Readme and in the sections below.
@@ -53,7 +53,8 @@ Styling has not yet been prioritized much. Please help out make the demo look be
 - `Home` brief overview of the examples
 - `GlobalService` use of global app service
 - `NamedServices` named services
-- `DragEffects` drag effects on a named service (*WIP*)
+- `DragEffects` drag effects on a named service
+- `CustomModelManager` immutable model manager with time travel
 
 *router*
 
@@ -118,6 +119,16 @@ You can use the `default` drake by not setting the `drake` attribute.
   <div class="container" v-dragula="stocks" service="second">...</div>
 </div>
 ```
+
+### Custom Model Manager with Time Travel
+
+Uses [seamless-immutable](https://www.npmjs.com/package/seamless-immutable) which contains Immutable data structures for JavaScript which are backwards-compatible with normal JS Arrays and Objects.
+
+Implements basic Time Travel with undo/redo back and forward in model history.
+Play with it and have fun!
+
+The difference for the immutable collections is that methods which would mutate the collection, like `push`, `set`, `unshift` or `splice` instead return a new immutable collection. Methods which return new arrays like `slice` or `concat` also return new immutable collections.
+
 
 ### Dragula Service pre-configuration
 

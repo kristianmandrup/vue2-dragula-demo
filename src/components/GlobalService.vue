@@ -2,7 +2,7 @@
   <section id="global-service-examples">
     <div class="examples">
       <div class="parent">
-        <label>Move stuff between these two containers. Note how the stuff gets inserted near the mouse pointer? Great stuff.</label>
+        <label>Global Service example</label>
         <div class="wrapper">
           <div class="container" v-dragula="colOne" drake="first">
             <div v-for="text in colOne" @click="onClick">{{text}} [click me]</div>

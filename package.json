@@ -15,6 +15,7 @@
     "lint:fix": "eslint --fix .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "seamless-immutable": "^6.3.0",
     "standard": "^8.5.0",
     "vue": "^2.0.5",
     "vue-material": "^0.3.0",

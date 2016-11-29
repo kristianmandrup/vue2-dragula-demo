@@ -1,8 +1,8 @@
 <template>
-  <section id="drag-effects">
+  <section id="custom-model-manager">
     <div class="examples">
       <div class="parent">
-        <label>Drag Effects Example</label>
+        <label>Custom Model Manager example</label>
         <div class="wrapper">
           <div id="first" class="container" v-dragula="colOne" service="effects">
             <div v-for="text in colOne">
@@ -22,6 +22,8 @@
   </section>
 </template>
 <script>
+import ImmutableModelManager from '../util/imm-model-manager'
+
 export default {
   name: 'dragEffects',
   data () {
@@ -43,9 +45,13 @@ export default {
     console.log('DRAG EFFECTS: created')
 
     let dragula = this.$dragula
+    let createModelManager = (opts) => {
+      return new ImmutableModelManager(opts)
+    }
 
     let service = dragula.createService({
       name: 'effects',
+      createModelManager,
       drake: {
         copy: true
       }
