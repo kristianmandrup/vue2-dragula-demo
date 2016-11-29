@@ -18,11 +18,17 @@
           </div>
         </div>
       </div>
+      <div class="actions">
+        <button @click="undo">undo</button>
+        <button @click="redo">redo</button>
+      </div>
     </div>
   </section>
 </template>
 <script>
 import ImmutableModelManager from '../util/imm-model-manager'
+
+const log = console.log
 
 export default {
   name: 'dragEffects',
@@ -37,10 +43,31 @@ export default {
         'This is the default use case. You only need to specify the containers you want to use',
         'More interactive use cases lie ahead',
         'Another message'
-      ]
+      ],
+      actions: {
+        done: [], // stack of actions to undo
+        undone: [] // stack of actions undone to be redone(via. redo)
+      }
     }
   },
-  // TODO: add drag
+
+  methods: {
+    undo () {
+      let action = this.actions.done.pop()
+      log('undo action', action.undo)
+      action.undo()
+      this.actions.undone.push(action)
+      log('actions undone', this.actions.undone)
+    },
+    redo () {
+      let action = this.actions.undone.pop()
+      log('redo action', action.redo)
+      action.redo()
+      this.actions.done.push(action)
+      log('actions done', this.actions.done)
+    }
+  },
+
   created () {
     console.log('DRAG EFFECTS: created')
 
@@ -52,12 +79,17 @@ export default {
     let service = dragula.createService({
       name: 'effects',
       createModelManager,
+      logging: {
+        directive: false,
+        plugin: false,
+        modelManager: true,
+        dragHandler: false,
+        service: false
+      },
       drake: {
         copy: true
       }
     })
-
-    let log = console.log
 
     // TODO: Use classlist: https://developer.mozilla.org/en/docs/Web/API/Element/classList
     // See all events here: https://github.com/bevacqua/dragula#drakeon-events
@@ -70,6 +102,10 @@ export default {
       'effects:dropModel': ({name, el, source, target, dropIndex, model}) => {
         log('HANDLE effects:dropModel: ', el, source, target, dropIndex, model)
         el.classList.add('ex-moved')
+
+        // add model history actions for local actions history navigation
+        this.actions.done.push(model)
+        log('actions done', this.actions.done)
       },
       accepts: ({el, target}) => {
         log('accepts: ', el, target)
@@ -85,6 +121,7 @@ export default {
         log('HANDLE drop: ', el, container, model, opts)
         log('classList', el.classList)
         el.classList.add('ex-moved')
+
         log('new classList', el.classList)
       },
       over: ({el, container}) => {

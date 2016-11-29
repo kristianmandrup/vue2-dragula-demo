@@ -6,12 +6,21 @@ export default class ImmutableModelManager extends ModelManager {
     super(opts)
   }
 
+  get clazzName () {
+    return this.constructor.name || 'ImmutableModelManager'
+  }
+
   createModel () {
     return Immutable([])
   }
 
+  createFor (opts = {}) {
+    return new ImmutableModelManager(opts)
+  }
+
   at (index) {
-    return this.model[this.dragIndex]
+    console.log('find model at', index, this.model)
+    return this.model[index]
   }
 
   timeTravel (index) {
@@ -24,7 +33,8 @@ export default class ImmutableModelManager extends ModelManager {
     if (this.timeIndex === 0) {
       return false
     }
-    return this.timeTravel(this.timeIndex--)
+    this.timeTravel(this.timeIndex--)
+    return this
   }
 
   redo () {
@@ -32,12 +42,15 @@ export default class ImmutableModelManager extends ModelManager {
     if (this.timeIndex < this.history.length) {
       return false
     }
-    return this.timeTravel(this.timeIndex++)
+    this.timeTravel(this.timeIndex++)
+    return this
   }
 
   addToHistory (newModel) {
+    this.model = newModel
     this.history.push(newModel)
     this.historyIndex++
+    return this
   }
 
   removeAt (index) {
@@ -50,7 +63,7 @@ export default class ImmutableModelManager extends ModelManager {
     const exclAfter = this.model.slice(index + 1)
     const newModel = this.createModel().concat(before, exclAfter)
 
-    this.addToHistory(newModel)
+    return this.addToHistory(newModel)
   }
 
   insertAt (index, dropModel) {
@@ -63,8 +76,7 @@ export default class ImmutableModelManager extends ModelManager {
     const before = this.model.slice(0, index)
     const inclAfter = this.model.slice(index)
     const newModel = this.createModel().concat(before, dropModel, inclAfter)
-
-    this.addToHistory(newModel)
+    return this.addToHistory(newModel)
   }
 
   move ({dragIndex, dropIndex}) {
@@ -75,5 +87,6 @@ export default class ImmutableModelManager extends ModelManager {
     })
     // HARD undo
     this.history.pop()
+    return this
   }
 }

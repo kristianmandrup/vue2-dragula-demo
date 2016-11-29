@@ -27,7 +27,8 @@ Vue.use(Vue2Dragula, {
     directive: true,
     plugin: true,
     service: true,
-    dragHandler: true
+    dragHandler: true,
+    modelManager: true
   }
 })
 
