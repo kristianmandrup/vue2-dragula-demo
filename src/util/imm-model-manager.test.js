@@ -6,9 +6,7 @@ const createIt = (opts = {}) => {
 }
 
 const logging = {
-  logging: {
-    modelManager: true
-  }
+  modelManager: true
 }
 
 const log = console.log
@@ -21,10 +19,16 @@ test.afterEach(t => {
   mm.clear()
 })
 
+test('shouldLog', t => {
+  t.true(mm.shouldLog, 'should log')
+})
+
+
+
 test('createModel', t => {
   let model = mm.createModel()
   log('createModel', model)
-  t.pass()
+  t.is(model.length, 0)
 })
 
 test('createFor', t => {
@@ -77,7 +81,7 @@ test('insertAt', t => {
   let model = mm.createFor([3, 4])
   let inserted = model.insertAt(0, [1, 2])
   log('inserted', inserted)
-  t.is(inserted.model, [1, 2, 3, 4])
+  t.deepEqual(inserted.model, [1, 2, 3, 4])
 })
 
 // removeAt
@@ -85,37 +89,49 @@ test('removeAt', t => {
   let model = mm.createFor([1, 2, 3, 4, 5])
   let removedFirst = model.removeAt(0)
   log('removed first', removedFirst)
-  t.is(removedFirst.model, [2, 3, 4, 5])
+  t.deepEqual(removedFirst.model, [2, 3, 4, 5])
 
   let removedLast = model.removeAt(2)
   log('removed last', removedLast)
-  t.is(removedLast.model, [2, 3, 4])
+  t.deepEqual(removedLast.model, [2, 3, 5])
 
   let removedMid = model.removeAt(1)
   log('removed mid', removedMid)
-  t.is(removedLast.model, [2, 4])
+  t.deepEqual(removedLast.model, [2, 5])
 })
 
 test('addToHistory', t => {
   let initialModel = [1, 2]
-  let model = mm.createFor(initialModel)
+  mm.createFor(initialModel)
+  mm.addToHistory(initialModel)
 
   let mdl = [1, 2, 3, 6]
-  let newModel = mm.createFor(mdl)
-  model.addToHistory(newModel)
-  t.is(this.history.length, 2)
+  mm.createFor(mdl)
+  mm.addToHistory(mdl)
 
-  t.is(this.history[0].model, initialModel)
-  t.is(this.history[1].model, mdl)
+  log('history', mm.history)
+  t.deepEqual(mm.history.length, 2)
+
+  t.deepEqual(mm.history[0], initialModel)
+  t.deepEqual(mm.history[1], mdl)
+})
+
+test('timeIndex', t => {
+  let initialModel = [1, 2]
+  let model = mm.createFor(initialModel)
+  model.insertAt(0, [0])
+  let timeIndex = model.timeIndex
+  log('timeIndex', timeIndex)
+  t.deepEqual(timeIndex, 1)
 })
 
 test('undo', t => {
   let initialModel = [1, 2]
   let model = mm.createFor(initialModel)
   model.insertAt(0, [0])
-  let firstModel = model.undo()
-  log('first model', firstModel)
-  t.deepEqual(firstModel.model, initialModel)
+  let undoMM = model.undo()
+  log('undo model', undoMM)
+  t.deepEqual(undoMM.model, initialModel)
 })
 
 test('redo', t => {

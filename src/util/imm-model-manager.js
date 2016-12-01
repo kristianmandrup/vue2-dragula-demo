@@ -6,6 +6,7 @@ import { ModelManager } from './model-manager'
 export default class ImmutableModelManager extends ModelManager {
   constructor (opts = {}) {
     super(opts)
+    this.timeIndex = 0
   }
 
   get clazzName () {
@@ -30,7 +31,7 @@ export default class ImmutableModelManager extends ModelManager {
   }
 
   isEmpty () {
-    return this.model.length == 0
+    return this.model.length === 0
   }
 
   get first () {
@@ -47,7 +48,7 @@ export default class ImmutableModelManager extends ModelManager {
   }
 
   undo () {
-    this.log('undo', this.timeIndex)
+    this.log('undo timeIndex', this.timeIndex)
     if (this.timeIndex === 0) {
       return false
     }
@@ -56,7 +57,7 @@ export default class ImmutableModelManager extends ModelManager {
   }
 
   redo () {
-    this.log('redo', this.timeIndex)
+    this.log('redo timeIndex', this.timeIndex)
     if (this.timeIndex < this.history.length) {
       return false
     }
@@ -67,7 +68,7 @@ export default class ImmutableModelManager extends ModelManager {
   addToHistory (newModel) {
     this.model = newModel
     this.history.push(newModel)
-    this.historyIndex++
+    this.timeIndex++
     return this
   }
 

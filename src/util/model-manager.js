@@ -5,7 +5,6 @@ export class ModelManager {
         model: opts
       }
     }
-
     this.opts = opts
     this.name = opts.name
     this.drake = opts.drake
@@ -38,6 +37,9 @@ export class ModelManager {
   }
 
   addToHistory (model) {
+    if (Array.isArray(model)) {
+      model = this.createFor({model: model})
+    }
     this.history.push(model)
     this.timeIndex++
   }
