@@ -12,6 +12,10 @@ export default class ImmutableModelManager extends ModelManager {
     return this.constructor.name || 'ImmutableModelManager'
   }
 
+  clear() {
+    this.model = this.createModel()
+  }
+
   createModel () {
     return Immutable([])
   }
@@ -23,6 +27,18 @@ export default class ImmutableModelManager extends ModelManager {
   at (index) {
     console.log('find model at', index, this.model)
     return this.model[index]
+  }
+
+  isEmpty () {
+    return this.model.length == 0
+  }
+
+  get first () {
+    return this.at(0)
+  }
+
+  get last () {
+    return this.at(this.model.length - 1)
   }
 
   timeTravel (index) {
