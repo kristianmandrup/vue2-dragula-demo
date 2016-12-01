@@ -7,6 +7,14 @@
 Demo app which demonstrates how to use the new [vue2-dragula](https://github.com/kristianmandrup/vue2-dragula) plugin.
 See more info in plugin Readme and in the sections below.
 
+This branch is trying to add an example for how to create a *Custom Model Manager* which uses an Immutable Array that keeps a history of previous state so you can undo/redo. Please see the `src/util` folder:
+
+- `imm-model-manager.js` custom model manger using immutable Array
+- `imm-model-manager.test.js` (using `ava` test runner)
+- `model-manager.js` same as in vue2-dragula
+
+
+
 ## Build Setup
 
 ``` bash

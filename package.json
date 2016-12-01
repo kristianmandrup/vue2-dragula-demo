@@ -8,11 +8,30 @@
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
     "unit": "karma start test/unit/karma.conf.js --single-run",
-    "e2e": "node test/e2e/runner.js",
-    "test": "npm run unit && npm run e2e",
+    "test": "ava --tap | tap-nyan",
+    "watch": "npm run test -- --watch",
+    "test:e2e": "node test/e2e/runner.js",
+    "test:unit": "npm run unit && npm run e2e",
     "fix": "standard --fix",
     "lint": "eslint --fix --ext .js,.vue src test/unit/specs test/e2e/specs",
     "lint:fix": "eslint --fix .js,.vue src test/unit/specs test/e2e/specs"
+  },
+  "ava": {
+    "files": [
+      "src/**/*.test.js"
+    ],
+    "source": [
+      "src/**/*.{js,jsx}",
+      "!dist/**/*"
+    ],
+    "concurrency": 5,
+    "failFast": true,
+    "tap": true,
+    "powerAssert": true,
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
   },
   "dependencies": {
     "seamless-immutable": "^6.3.0",
@@ -24,6 +43,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",
+    "ava": "^0.17.0",
     "babel-core": "^6.0.0",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.0.0",
@@ -73,6 +93,7 @@
     "shelljs": "^0.7.4",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
+    "tap-nyan": "^1.1.0",
     "url-loader": "^0.5.7",
     "vue-loader": "^9.4.0",
     "vue-style-loader": "^1.0.0",
@@ -82,7 +103,7 @@
     "webpack-merge": "^0.14.1"
   },
   "engines": {
-    "node": ">= 4.0.0",
+    "node": ">= 5.0.0",
     "npm": ">= 3.0.0"
   }
 }

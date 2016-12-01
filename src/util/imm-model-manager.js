@@ -1,5 +1,7 @@
 import Immutable from 'seamless-immutable'
-import { ModelManager } from 'vue2-dragula'
+import { ModelManager } from './model-manager'
+
+// console.log('ModelManager', ModelManager)
 
 export default class ImmutableModelManager extends ModelManager {
   constructor (opts = {}) {
