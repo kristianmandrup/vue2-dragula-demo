@@ -1,5 +1,11 @@
 export class ModelManager {
-  constructor(opts = {}) {
+  constructor (opts = {}) {
+    if (Array.isArray(opts)) {
+      opts = {
+        model: opts
+      }
+    }
+
     this.opts = opts
     this.name = opts.name
     this.drake = opts.drake
@@ -10,49 +16,49 @@ export class ModelManager {
     this.log('CREATE', opts)
   }
 
-  get clazzName() {
+  get clazzName () {
     return this.constructor.name || 'ModelManager'
   }
 
-  get shouldLog() {
+  get shouldLog () {
     return this.logging && this.logging.modelManager
   }
 
-  log(event, ...args) {
+  log (event, ...args) {
     if (!this.shouldLog) return
     console.log(`${this.clazzName} [${this.name}] :`, event, ...args)
   }
 
-  undo() {
+  undo () {
     this.log('undo', 'not yet implemented')
   }
 
-  redo() {
+  redo () {
     this.log('redo', 'not yet implemented')
   }
 
-  addToHistory(model) {
+  addToHistory (model) {
     this.history.push(model)
     this.timeIndex++
   }
 
-  at(index) {
-    return this.model[index]
+  at (index) {
+    return this.model.get(index)
   }
 
-  createModel(model) {
-    return this.model || model || [];
+  createModel (model) {
+    return this.model || model || []
   }
 
-  createHistory() {
-    return this.history || [];
+  createHistory () {
+    return this.history || []
   }
 
-  createFor(opts = {}) {
+  createFor (opts = {}) {
     return new ModelManager(opts)
   }
 
-  removeAt(index) {
+  removeAt (index) {
     this.log('removeAt', {
       model: this.model,
       index
@@ -60,7 +66,7 @@ export class ModelManager {
     return this.model.splice(index, 1)
   }
 
-  insertAt(index, dropModel) {
+  insertAt (index, dropModel) {
     this.log('insertAt', {
       model: this.model,
       index,
@@ -69,7 +75,7 @@ export class ModelManager {
     return this.model.splice(index, 0, dropModel)
   }
 
-  move({dragIndex, dropIndex}) {
+  move ({dragIndex, dropIndex}) {
     this.log('move', {
       model: this.model,
       dragIndex,

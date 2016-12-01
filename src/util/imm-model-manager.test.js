@@ -15,26 +15,32 @@ const log = console.log
 
 const mm = createIt({ logging })
 
+// for API see lists at: http://ricostacruz.com/cheatsheets/immutable-js.html
+
 test.afterEach(t => {
   mm.clear()
 })
 
 test('createModel', t => {
   let model = mm.createModel()
-  log(model)
+  log('createModel', model)
   t.pass()
 })
 
 test('createFor', t => {
   let model = mm.createFor([])
-  log(model)
+  log('createFor', model)
   t.pass()
 })
 
 test('isEmpty', t => {
+  let model = mm.createFor([])
   t.true(model.isEmpty(), 'is empty')
-  let model = mm.createFor([1])
-  t.false(model.isEmpty(), 'is not empty')
+  let model1 = mm.createFor({
+    model: [1]
+  })
+  log('not empty', model1)
+  t.false(model1.isEmpty(), 'is not empty')
 })
 
 test('at (index) empty', t => {
@@ -47,9 +53,9 @@ test('at (index) elements', t => {
   let model = mm.createFor([1, 2])
   let item0 = model.at(0)
   let item1 = model.at(1)
-  log(model)
-  t.is(item0, 0)
-  t.is(item1, 1)
+  log(model, item0, item1)
+  t.is(item0, 1)
+  t.is(item1, 2)
 })
 
 test('first', t => {

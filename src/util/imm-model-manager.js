@@ -12,12 +12,12 @@ export default class ImmutableModelManager extends ModelManager {
     return this.constructor.name || 'ImmutableModelManager'
   }
 
-  clear() {
+  clear () {
     this.model = this.createModel()
   }
 
-  createModel () {
-    return Immutable([])
+  createModel (model) {
+    return Immutable(model || [])
   }
 
   createFor (opts = {}) {
