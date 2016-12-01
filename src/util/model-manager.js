@@ -8,8 +8,12 @@ export class ModelManager {
     this.opts = opts
     this.name = opts.name
     this.drake = opts.drake
-    this.model = this.createModel(opts.model || [])
+
     this.history = opts.history || this.createHistory()
+
+    this.model = this.createModel(opts.model || [])
+    this.addToHistory(this.model)
+
     this.logging = opts.logging
     this.timeIndex = 0
     this.log('CREATE', opts)

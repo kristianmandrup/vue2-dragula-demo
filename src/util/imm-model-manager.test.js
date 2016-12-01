@@ -116,10 +116,11 @@ test('addToHistory', t => {
   mm.addToHistory(mdl)
 
   log('history', mm.history)
-  t.deepEqual(mm.history.length, 2)
+  t.deepEqual(mm.history.length, 3)
 
-  t.deepEqual(mm.history[0], initialModel)
-  t.deepEqual(mm.history[1], mdl)
+  t.deepEqual(mm.history[0], [])
+  t.deepEqual(mm.history[1], initialModel)
+  t.deepEqual(mm.history[2], mdl)
 })
 
 test('timeIndex', t => {
