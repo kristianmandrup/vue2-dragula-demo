@@ -45,56 +45,42 @@ export default {
         'Another message'
       ],
       actions: {
-        done: {
-          // stack of actions to undo
-          removed: [],
-          dropped: []
-        },
-        undone: {
-          // stack of actions undone to be redone(via. redo)
-          removed: [],
-          dropped: []
-        }
+        // stack of actions to undo
+        done: [],
+        // stack of actions undone to be redone(via. redo)
+        undone: []
       }
     }
   },
 
   methods: {
-    undoCol (col) {
-      console.log('undoCol', col)
-      let done = this.actions.done[col]
-      let undone = this.actions.undone[col]
+    undo () {
+      console.log('undo')
+      let done = this.actions.done
+      let undone = this.actions.undone
       if (!done.length) {
-        console.log('done actions empty', col, done)
+        console.log('done actions empty', done)
         return
       }
       let action = done.pop()
-      log('undo actions', col, action.undo)
+      log('undo actions', action.undo)
       action.undo()
       undone.push(action)
       log('actions undone', undone)
     },
-    redoCol (col) {
-      console.log('redoCol', col)
-      let done = this.actions.done[col]
-      let undone = this.actions.undone[col]
+    redo () {
+      console.log('redo')
+      let done = this.actions.done
+      let undone = this.actions.undone
       if (!undone.length) {
-        console.log('undone actions empty', col, undone)
+        console.log('undone actions empty', undone)
         return
       }
       let action = undone.pop()
-      log('redo action', col, action.redo)
+      log('redo action', action.redo)
       action.redo()
       done.push(action)
       log('actions done', done)
-    },
-    undo () {
-      this.undoCol('removed')
-      this.undoCol('dropped')
-    },
-    redo () {
-      this.redoCol('removed')
-      this.redoCol('dropped')
     }
   },
 
@@ -121,25 +107,31 @@ export default {
       }
     })
 
-    // TODO: Use classlist: https://developer.mozilla.org/en/docs/Web/API/Element/classList
-    // See all events here: https://github.com/bevacqua/dragula#drakeon-events
-    //
+    // See: https://github.com/bevacqua/dragula#drakeon-events
     service.on({
+      // in response to dragula.on('remove')
+      // el was being dragged but it got nowhere and it was removed from the DOM.
+      // Its last stable parent was container, and originally came from source
       'effects:removeModel': ({name, el, source, dragIndex, model}) => {
         log('HANDLE effects:removeModel: ', name, el, source, dragIndex, model)
         el.classList.remove('ex-moved')
-
-        this.actions.done.removed.push(model)
-        log('actions done', this.actions.done)
       },
+
+      // TODO: enable undo/redo by keeping track of indexes
+      'effects:insertAt': ({dragIndex, dropIndex, model}) => {
+        log('HANDLE effects:insertAt: ', dragIndex, dropIndex, model)
+      },
+
+      // TODO: the incoming model should be added to local history
       'effects:dropModel': ({name, el, source, target, dropIndex, model}) => {
         log('HANDLE effects:dropModel: ', el, source, target, dropIndex, model)
         el.classList.add('ex-moved')
 
         // add model history actions for local actions history navigation
-        this.actions.done.dropped.push(model)
+        this.actions.done.push(model)
         log('actions done', this.actions.done)
       },
+
       accepts: ({el, target}) => {
         log('accepts: ', el, target)
         return true // target !== document.getElementById(left)
