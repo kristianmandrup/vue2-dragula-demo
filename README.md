@@ -2,7 +2,7 @@
 
 > A Vue.js demo app to demonstrate how to use [Dragula](https://bevacqua.github.io/dragula/) with [Vue 2](https://vuex.vuejs.org) for drag and drop.
 
-### Status
+### Status: Time travel
 
 Demo app which demonstrates how to use the new [vue2-dragula](https://github.com/kristianmandrup/vue2-dragula) plugin.
 See more info in plugin Readme and in the sections below.
@@ -13,7 +13,11 @@ This branch is trying to add an example for how to create a *Custom Model Manage
 - `imm-model-manager.test.js` (using `ava` test runner)
 - `model-manager.js` same as in vue2-dragula
 
+The undo seems to be working partly, but the UI doesn't reflect it, so...
+Also the undo/redo should affect both the source and target models.
+Likely we need to perform undo or redo on both models to keep in sync!
 
+Any help on adding this feature would be greatly appreciated!!
 
 ## Build Setup
 

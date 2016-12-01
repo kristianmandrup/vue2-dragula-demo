@@ -45,26 +45,56 @@ export default {
         'Another message'
       ],
       actions: {
-        done: [], // stack of actions to undo
-        undone: [] // stack of actions undone to be redone(via. redo)
+        done: {
+          // stack of actions to undo
+          removed: [],
+          dropped: []
+        },
+        undone: {
+          // stack of actions undone to be redone(via. redo)
+          removed: [],
+          dropped: []
+        }
       }
     }
   },
 
   methods: {
-    undo () {
-      let action = this.actions.done.pop()
-      log('undo action', action.undo)
+    undoCol (col) {
+      console.log('undoCol', col)
+      let done = this.actions.done[col]
+      let undone = this.actions.undone[col]
+      if (!done.length) {
+        console.log('done actions empty', col, done)
+        return
+      }
+      let action = done.pop()
+      log('undo actions', col, action.undo)
       action.undo()
-      this.actions.undone.push(action)
-      log('actions undone', this.actions.undone)
+      undone.push(action)
+      log('actions undone', undone)
+    },
+    redoCol (col) {
+      console.log('redoCol', col)
+      let done = this.actions.done[col]
+      let undone = this.actions.undone[col]
+      if (!undone.length) {
+        console.log('undone actions empty', col, undone)
+        return
+      }
+      let action = undone.pop()
+      log('redo action', col, action.redo)
+      action.redo()
+      done.push(action)
+      log('actions done', done)
+    },
+    undo () {
+      this.undoCol('removed')
+      this.undoCol('dropped')
     },
     redo () {
-      let action = this.actions.undone.pop()
-      log('redo action', action.redo)
-      action.redo()
-      this.actions.done.push(action)
-      log('actions done', this.actions.done)
+      this.redoCol('removed')
+      this.redoCol('dropped')
     }
   },
 
@@ -98,13 +128,16 @@ export default {
       'effects:removeModel': ({name, el, source, dragIndex, model}) => {
         log('HANDLE effects:removeModel: ', name, el, source, dragIndex, model)
         el.classList.remove('ex-moved')
+
+        this.actions.done.removed.push(model)
+        log('actions done', this.actions.done)
       },
       'effects:dropModel': ({name, el, source, target, dropIndex, model}) => {
         log('HANDLE effects:dropModel: ', el, source, target, dropIndex, model)
         el.classList.add('ex-moved')
 
         // add model history actions for local actions history navigation
-        this.actions.done.push(model)
+        this.actions.done.dropped.push(model)
         log('actions done', this.actions.done)
       },
       accepts: ({el, target}) => {
