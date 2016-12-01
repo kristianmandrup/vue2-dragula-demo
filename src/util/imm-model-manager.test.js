@@ -90,8 +90,18 @@ test('removeAt', t => {
   t.is(removedLast.model, [2, 4])
 })
 
-// addToHistory
+test('addToHistory', t => {
+  let initialModel = [1, 2]
+  let model = mm.createFor(initialModel)
 
+  let mdl = [1, 2, 3, 6]
+  let newModel = mm.createFor(mdl)
+  model.addToHistory(newModel)
+  t.is(this.history.length, 2)
+
+  t.is(this.history[0].model, initialModel)
+  t.is(this.history[1].model, mdl)
+})
 
 test('undo', t => {
   let initialModel = [1, 2]
