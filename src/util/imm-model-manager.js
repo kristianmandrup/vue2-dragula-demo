@@ -21,6 +21,7 @@ export default class ImmutableModelManager extends ModelManager {
     return Immutable(model || [])
   }
 
+  // TODO: add to history!?
   createFor (opts = {}) {
     return new ImmutableModelManager(opts)
   }
@@ -43,8 +44,9 @@ export default class ImmutableModelManager extends ModelManager {
   }
 
   timeTravel (index) {
+    this.log('timeTravel to', index)
     this.model = this.history[index]
-    return this.model
+    return this
   }
 
   undo () {
@@ -52,21 +54,25 @@ export default class ImmutableModelManager extends ModelManager {
     if (this.timeIndex === 0) {
       return false
     }
-    this.timeTravel(this.timeIndex--)
+    this.timeIndex--
+    this.timeTravel(this.timeIndex)
     return this
   }
 
   redo () {
-    this.log('redo timeIndex', this.timeIndex)
-    if (this.timeIndex < this.history.length) {
+    this.log('redo timeIndex', this.timeIndex, this.history.length)
+    if (this.timeIndex > this.history.length - 1) {
       return false
     }
-    this.timeTravel(this.timeIndex++)
+    this.timeIndex++
+    this.timeTravel(this.timeIndex)
     return this
   }
 
   addToHistory (newModel) {
+    this.log('addToHistory: old', this.model, 'new', newModel)
     this.model = newModel
+    this.log('model was set to', this.model)
     this.history.push(newModel)
     this.timeIndex++
     return this
@@ -80,6 +86,8 @@ export default class ImmutableModelManager extends ModelManager {
     // create new model with self excluded
     const before = this.model.slice(0, index)
     const exclAfter = this.model.slice(index + 1)
+
+    this.log('removeAt: concat', before, exclAfter)
     const newModel = this.createModel().concat(before, exclAfter)
 
     return this.addToHistory(newModel)
@@ -94,6 +102,8 @@ export default class ImmutableModelManager extends ModelManager {
     // create new model with new inserted
     const before = this.model.slice(0, index)
     const inclAfter = this.model.slice(index)
+    this.log('insertAt: concat', before, dropModel, inclAfter)
+
     const newModel = this.createModel().concat(before, dropModel, inclAfter)
     return this.addToHistory(newModel)
   }

@@ -9,6 +9,15 @@ const logging = {
   modelManager: true
 }
 
+const createFor = (model) => {
+  return createIt({
+    name: 'test',
+    model: model,
+    logging
+  })
+}
+
+
 const log = console.log
 
 const mm = createIt({ logging })
@@ -24,7 +33,6 @@ test('shouldLog', t => {
 })
 
 
-
 test('createModel', t => {
   let model = mm.createModel()
   log('createModel', model)
@@ -32,29 +40,27 @@ test('createModel', t => {
 })
 
 test('createFor', t => {
-  let model = mm.createFor([])
+  let model = createFor([])
   log('createFor', model)
   t.pass()
 })
 
 test('isEmpty', t => {
-  let model = mm.createFor([])
+  let model = createFor([])
   t.true(model.isEmpty(), 'is empty')
-  let model1 = mm.createFor({
-    model: [1]
-  })
+  let model1 = createFor([1])
   log('not empty', model1)
   t.false(model1.isEmpty(), 'is not empty')
 })
 
 test('at (index) empty', t => {
-  let model = mm.createFor([])
+  let model = createFor([])
   let item0 = model.at(0)
   t.falsy(item0, 'nothing at 0 in empty list')
 })
 
 test('at (index) elements', t => {
-  let model = mm.createFor([1, 2])
+  let model = createFor([1, 2])
   let item0 = model.at(0)
   let item1 = model.at(1)
   log(model, item0, item1)
@@ -63,14 +69,14 @@ test('at (index) elements', t => {
 })
 
 test('first', t => {
-  let model = mm.createFor([1, 2])
+  let model = createFor([1, 2])
   let item = model.first
   log('first', item)
   t.is(item, 1)
 })
 
 test('last', t => {
-  let model = mm.createFor([1, 2])
+  let model = createFor([1, 2])
   let item = model.last
   log('last', item)
   t.is(item, 2)
@@ -78,7 +84,7 @@ test('last', t => {
 
 // insertAt
 test('insertAt', t => {
-  let model = mm.createFor([3, 4])
+  let model = createFor([3, 4])
   let inserted = model.insertAt(0, [1, 2])
   log('inserted', inserted)
   t.deepEqual(inserted.model, [1, 2, 3, 4])
@@ -86,7 +92,7 @@ test('insertAt', t => {
 
 // removeAt
 test('removeAt', t => {
-  let model = mm.createFor([1, 2, 3, 4, 5])
+  let model = createFor([1, 2, 3, 4, 5])
   let removedFirst = model.removeAt(0)
   log('removed first', removedFirst)
   t.deepEqual(removedFirst.model, [2, 3, 4, 5])
@@ -118,7 +124,7 @@ test('addToHistory', t => {
 
 test('timeIndex', t => {
   let initialModel = [1, 2]
-  let model = mm.createFor(initialModel)
+  let model = createFor(initialModel)
   model.insertAt(0, [0])
   let timeIndex = model.timeIndex
   log('timeIndex', timeIndex)
@@ -127,22 +133,24 @@ test('timeIndex', t => {
 
 test('undo', t => {
   let initialModel = [1, 2]
-  let model = mm.createFor(initialModel)
-  model.insertAt(0, [0])
+  let model = createFor(initialModel)
+  let initial = model.insertAt(0, [0])
+  model.insertAt(1, [4])
   let undoMM = model.undo()
   log('undo model', undoMM)
-  t.deepEqual(undoMM.model, initialModel)
+  t.deepEqual(undoMM.model, initial.model)
 })
 
 test('redo', t => {
   let initialModel = [1, 2]
-  let imodel = mm.createFor(initialModel)
-  let latestModel = imodel.insertAt(0, [0])
+  let imodel = createFor(initialModel)
+  let initial = imodel.insertAt(0, [0])
   log('latest model', latestModel)
+  let latestModel = imodel.insertAt(1, [4])
 
   let prevModel = imodel.undo()
   log('prev model', prevModel)
-  t.deepEqual(prevModel.model, initialModel)
+  t.deepEqual(prevModel.model, initial.model)
 
   let nextModel = imodel.redo()
   log('next model', nextModel)
@@ -151,11 +159,13 @@ test('redo', t => {
 
 test('timeTravel (index)', t => {
   let initialModel = [1, 2]
-  let model = mm.createFor(initialModel)
-  model.insertAt(0, [0])
+  let model = createFor(initialModel)
+  let firstStep = model.insertAt(0, [0])
+  model.insertAt(1, [4])
+
   let firstModel = model.timeTravel(0)
   log('first model', firstModel)
-  t.deepEqual(firstModel.model, initialModel)
+  t.deepEqual(firstModel.model, firstStep.model)
 })
 
 
