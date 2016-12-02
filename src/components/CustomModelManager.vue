@@ -63,8 +63,12 @@ export default {
         return
       }
       let action = done.pop()
-      log('undo actions', action.undo)
-      action.undo()
+      let { models } = action
+      let { sourceModel, targetModel } = models
+
+      log('undo actions', sourceModel.undo, targetModel.undo)
+      sourceModel.undo()
+      targetModel.undo()
       undone.push(action)
       log('actions undone', undone)
     },
@@ -77,10 +81,21 @@ export default {
         return
       }
       let action = undone.pop()
-      log('redo action', action.redo)
-      action.redo()
+      let { models } = action
+      let { sourceModel, targetModel } = models
+
+      log('redo actions', sourceModel.redo, targetModel.redo)
+      sourceModel.redo()
+      targetModel.redo()
+
       done.push(action)
       log('actions done', done)
+    },
+    inserted ({ name, models, indexes }) {
+      this.actions.done.push({
+        models,
+        indexes
+      })
     }
   },
 
@@ -112,24 +127,34 @@ export default {
       // in response to dragula.on('remove')
       // el was being dragged but it got nowhere and it was removed from the DOM.
       // Its last stable parent was container, and originally came from source
-      'effects:removeModel': ({name, el, source, dragIndex, model}) => {
-        log('HANDLE effects:removeModel: ', name, el, source, dragIndex, model)
+      'effects:removeModel': ({name, el, source, dragIndex, sourceModel}) => {
+        log('HANDLE effects:removeModel: ', name, el, source, dragIndex, sourceModel)
         el.classList.remove('ex-moved')
       },
 
       // TODO: enable undo/redo by keeping track of indexes
-      'effects:insertAt': ({dragIndex, dropIndex, model}) => {
-        log('HANDLE effects:insertAt: ', dragIndex, dropIndex, model)
+      'effects:insertAt': ({name, dragIndex, dropIndex, sourceModel, targetModel, transitModel}) => {
+        log('HANDLE effects:insertAt: ', dragIndex, dropIndex, sourceModel, targetModel, transitModel)
+        // add model history actions for local actions history navigation
+        this.inserted({
+          name,
+          models: {
+            sourceModel,
+            targetModel,
+            transitModel
+          },
+          indexes: {
+            dragIndex,
+            dropIndex
+          }
+        })
+        log('actions done', this.actions.done)
       },
 
       // TODO: the incoming model should be added to local history
       'effects:dropModel': ({name, el, source, target, dropIndex, model}) => {
         log('HANDLE effects:dropModel: ', el, source, target, dropIndex, model)
         el.classList.add('ex-moved')
-
-        // add model history actions for local actions history navigation
-        this.actions.done.push(model)
-        log('actions done', this.actions.done)
       },
 
       accepts: ({el, target}) => {
