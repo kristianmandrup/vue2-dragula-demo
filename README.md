@@ -171,6 +171,10 @@ In theory we should thus be able to do:
 `this.modelRef = this.model` for `sourcModel` and `targetModel` after `undo`/`redo` on each, in order to change the VM models
 and have the UI change to reflect that change.
 
+
+Ideally there should be a separate `TimeMachine` class used by the `ModelManager` to handle time transitions.
+
+
 ### Dragula Service pre-configuration
 
 Always pre-configure named services with drakes in the `created` life cycle hook method of the VM.
