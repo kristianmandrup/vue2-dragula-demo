@@ -9,14 +9,10 @@ export class ModelManager {
     this.name = opts.name
     this.drake = opts.drake
 
-    this.history = opts.history || this.createHistory()
-
     this.modelRef = opts.model || []
     this.model = this.createModel(this.modelRef)
-    this.history.push(this.model)
 
     this.logging = opts.logging
-    this.timeIndex = 0
     this.log('CREATE', opts)
   }
 
@@ -41,24 +37,16 @@ export class ModelManager {
     this.log('redo', 'not yet implemented')
   }
 
-  addToHistory (model) {
-    if (Array.isArray(model)) {
-      model = this.createFor({model: model})
-    }
-    this.history.push(model)
-    this.timeIndex++
-  }
-
   at (index) {
     return this.model.get(index)
   }
 
-  createModel (model) {
-    return this.model || model || []
+  clear () {
+    this.model = this.createModel()
   }
 
-  createHistory () {
-    return this.history || []
+  createModel (model) {
+    return this.model || model || []
   }
 
   createFor (opts = {}) {

@@ -166,13 +166,23 @@ Currently the `ImmModelManager` contains all the history methods/tracking but we
 Both the `sourceModel` and `targetModel` have a history, so we can undo on both and update the VM models to reflect
 these. The VM/drake model references are encapsulated by the `ImmModelManager` of `source-` and `targetModel` as `modelRef`.
 
-In theory we should thus be able to do:
+We should thus be able to do:
 
 `this.modelRef = this.model` for `sourcModel` and `targetModel` after `undo`/`redo` on each, in order to change the VM models
 and have the UI change to reflect that change.
 
+`ImmModelManager` uses a `TimeMachine` to manage history and handle time transitions.
+The key method is the `timeTravel` method shown here, which sets the `modelRef` accordingly.
+`timeTravel` is used internally by both `undo` and `redo`.
 
-Ideally there should be a separate `TimeMachine` class used by the `ModelManager` to handle time transitions.
+```js
+  timeTravel (index) {
+    this.log('timeTravel to', index)
+    this.model = this.history[index]
+    this.modelRef = this.model
+    return this
+  }
+```
 
 
 ### Dragula Service pre-configuration

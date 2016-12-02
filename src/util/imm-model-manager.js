@@ -1,20 +1,27 @@
 import Immutable from 'seamless-immutable'
 import { ModelManager } from './model-manager'
+import { TimeMachine } from './time-machine'
 
-// console.log('ModelManager', ModelManager)
+const createDefaultTimeMachine = function (opts) {
+  return new TimeMachine(opts)
+}
 
 export default class ImmutableModelManager extends ModelManager {
   constructor (opts = {}) {
     super(opts)
-    this.timeIndex = 0
+    let createTimeMachine = opts.createTimeMachine || createDefaultTimeMachine
+    this.timeMachine = createTimeMachine(Object.assign(opts, {
+      model: this.model
+    }))
   }
 
   get clazzName () {
     return this.constructor.name || 'ImmutableModelManager'
   }
 
-  clear () {
-    this.model = this.createModel()
+  addToHistory (model) {
+    this.timeMachine.addToHistory(model)
+    return this
   }
 
   createModel (model) {
@@ -41,41 +48,6 @@ export default class ImmutableModelManager extends ModelManager {
 
   get last () {
     return this.at(this.model.length - 1)
-  }
-
-  timeTravel (index) {
-    this.log('timeTravel to', index)
-    this.model = this.history[index]
-    return this
-  }
-
-  undo () {
-    this.log('undo timeIndex', this.timeIndex)
-    if (this.timeIndex === 0) {
-      return false
-    }
-    this.timeIndex--
-    this.timeTravel(this.timeIndex)
-    return this
-  }
-
-  redo () {
-    this.log('redo timeIndex', this.timeIndex, this.history.length)
-    if (this.timeIndex > this.history.length - 1) {
-      return false
-    }
-    this.timeIndex++
-    this.timeTravel(this.timeIndex)
-    return this
-  }
-
-  addToHistory (newModel) {
-    this.log('addToHistory: old', this.model, 'new', newModel)
-    this.model = newModel
-    this.log('model was set to', this.model)
-    this.history.push(newModel)
-    this.timeIndex++
-    return this
   }
 
   removeAt (index) {
@@ -114,8 +86,8 @@ export default class ImmutableModelManager extends ModelManager {
       dragIndex,
       dropIndex
     })
-    // HARD undo
-    this.history.pop()
+    // HARD undo!?
+    this.timeMachine.undo()
     return this
   }
 }
