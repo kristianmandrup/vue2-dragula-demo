@@ -139,8 +139,37 @@ Uses [seamless-immutable](https://www.npmjs.com/package/seamless-immutable) whic
 Implements basic Time Travel with undo/redo back and forward in model history.
 Play with it and have fun!
 
-The difference for the immutable collections is that methods which would mutate the collection, like `push`, `set`, `unshift` or `splice` instead return a new immutable collection. Methods which return new arrays like `slice` or `concat` also return new immutable collections.
+The difference for the immutable collections is that methods which would mutate the collection, like `push`, `set`, `unshift` or `splice` instead return a new immutable collection.
+Methods which return new arrays like `slice` or `concat` also return new immutable collections.
+The local VM should maintain a history of transactions that can be undone.
 
+An action consists of:
+- `dragIndex` index in source model
+- `dropIndex` index in target model
+- `sourceModel` source list (or model manager that manages a list, ie. a model)
+- `targetModel` destination list
+- `transitModel` item (or list) in transition from source to target
+
+The event handlers `insertAt` and `dropModel` can be used to manage the action history.
+`insertAt` looks like the best candidate as it has access to all the action information.
+
+```js
+'effects:insertAt': ({dragIndex, dropIndex, sourceModel, targetModel, transitModel}) => {
+
+},
+
+'effects:dropModel': ({name, el, source, target, dragIndex, dropIndex, sourceModel}) => {
+}
+```
+
+Currently the `ImmModelManager` contains all the history methods/tracking but we need to use this in the VM itself.
+Both the `sourceModel` and `targetModel` have a history, so we can undo on both and update the VM models to reflect
+these. The VM/drake model references are encapsulated by the `ImmModelManager` of `source-` and `targetModel` as `modelRef`.
+
+In theory we should thus be able to do:
+
+`this.modelRef = this.model` for `sourcModel` and `targetModel` after `undo`/`redo` on each, in order to change the VM models
+and have the UI change to reflect that change.
 
 ### Dragula Service pre-configuration
 

@@ -11,8 +11,9 @@ export class ModelManager {
 
     this.history = opts.history || this.createHistory()
 
-    this.model = this.createModel(opts.model || [])
-    this.addToHistory(this.model)
+    this.modelRef = opts.model || []
+    this.model = this.createModel(this.modelRef)
+    this.history.push(this.model)
 
     this.logging = opts.logging
     this.timeIndex = 0
