@@ -64,11 +64,11 @@ export default {
       }
       let action = done.pop()
       let { models } = action
-      let { sourceModel, targetModel } = models
+      let { source, target } = models
 
-      log('undo actions', sourceModel.undo, targetModel.undo)
-      sourceModel.undo()
-      targetModel.undo()
+      log('undo actions', source.redo, target.redo)
+      source.undo()
+      target.undo()
       undone.push(action)
       log('actions undone', undone)
     },
@@ -82,11 +82,11 @@ export default {
       }
       let action = undone.pop()
       let { models } = action
-      let { sourceModel, targetModel } = models
+      let { source, target } = models
 
-      log('redo actions', sourceModel.redo, targetModel.redo)
-      sourceModel.redo()
-      targetModel.redo()
+      log('redo actions', source.redo, target.redo)
+      source.redo()
+      target.redo()
 
       done.push(action)
       log('actions done', done)
@@ -133,20 +133,13 @@ export default {
       },
 
       // TODO: enable undo/redo by keeping track of indexes
-      'effects:insertAt': ({name, dragIndex, dropIndex, sourceModel, targetModel, transitModel}) => {
-        log('HANDLE effects:insertAt: ', dragIndex, dropIndex, sourceModel, targetModel, transitModel)
+      'effects:insertAt': ({name, indexes, models}) => {
+        log('HANDLE effects:insertAt: ', indexes, models)
         // add model history actions for local actions history navigation
         this.inserted({
           name,
-          models: {
-            sourceModel,
-            targetModel,
-            transitModel
-          },
-          indexes: {
-            dragIndex,
-            dropIndex
-          }
+          models,
+          indexes
         })
         log('actions done', this.actions.done)
       },
