@@ -1,5 +1,6 @@
 export class TimeMachine {
-  constructor ({model, history, logging}) {
+  constructor ({name, model, history, logging}) {
+    this.name = name || 'default'
     this.model = model
     this.logging = logging
     this.history = history || this.createHistory()

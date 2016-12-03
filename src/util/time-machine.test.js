@@ -7,6 +7,7 @@ const logging = {
 
 const createFor = function (model) {
   return new TimeMachine({
+    name: 'test',
     model: model,
     logging: logging
   })
@@ -22,11 +23,11 @@ test('addToHistory', t => {
   tm.addToHistory(mdl)
 
   log('history', tm.history)
-  t.deepEqual(tm.history.length, 3)
+  t.deepEqual(tm.history.length, 2)
 
-  t.deepEqual(tm.history[0], [])
-  t.deepEqual(tm.history[1], initialModel)
-  t.deepEqual(tm.history[2], mdl)
+  t.deepEqual(tm.history[0], initialModel)
+  t.deepEqual(tm.history[1], mdl)
+  t.deepEqual(tm.history[2], undefined)
 })
 
 test('timeIndex', t => {

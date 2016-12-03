@@ -10,10 +10,18 @@ export class ModelManager {
     this.drake = opts.drake
 
     this.modelRef = opts.model || []
-    this.model = this.createModel(this.modelRef)
+    this._model = this.createModel(this.modelRef)
 
     this.logging = opts.logging
     this.log('CREATE', opts)
+  }
+
+  get model () {
+    return this._model
+  }
+
+  set model (model) {
+    this._model = model
   }
 
   get clazzName () {

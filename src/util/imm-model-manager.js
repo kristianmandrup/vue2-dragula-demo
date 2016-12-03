@@ -19,6 +19,10 @@ export default class ImmutableModelManager extends ModelManager {
     return this.constructor.name || 'ImmutableModelManager'
   }
 
+  get model () {
+    return this.timeMachine ? this.timeMachine.model : this._model
+  }
+
   undo () {
     this.timeMachine.undo()
     return this
