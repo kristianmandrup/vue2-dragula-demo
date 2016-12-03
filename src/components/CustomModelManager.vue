@@ -55,8 +55,8 @@ export default {
     redo () {
       this.containerManager.redo()
     },
-    insert (action) {
-      this.containerManager.inserted(action)
+    act (action) {
+      this.containerManager.act(action)
     }
   },
 
@@ -101,12 +101,12 @@ export default {
       'effects:insertAt': ({name, indexes, models}) => {
         log('HANDLE effects:insertAt: ', indexes, models)
         // add model history actions for local actions history navigation
-        this.insert({
+        this.act({
           name,
           models,
           indexes
         })
-        log('actions done', this.actions.done)
+        log('containerManager actions', this.containerManager.actions)
       },
 
       // TODO: the incoming model should be added to local history

@@ -1,5 +1,5 @@
 import test from 'ava'
-import { ContainerManager } from './container-manager'
+import ContainerManager from './container-manager'
 
 const createIt = (opts = {}) => {
   return new ContainerManager(opts)

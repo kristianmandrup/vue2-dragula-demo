@@ -1,4 +1,4 @@
-export class ContainerManager {
+export default class ContainerManager {
   constructor (opts = {}) {
     this.name = opts.name || 'default'
     this.logging = opts.logging
@@ -33,10 +33,10 @@ export class ContainerManager {
     actFun()
   }
 
-  do ({ act }) {
-    this.log(act.name)
-    let cDo = act.container.do
-    let cUndo = act.container.undo
+  do ({name, container}) {
+    this.log(name)
+    let cDo = container.do
+    let cUndo = container.undo
     if (!cDo.length) {
       this.log('actions empty', cDo)
       return
@@ -45,9 +45,9 @@ export class ContainerManager {
     let { models } = action
     let { source, target } = models
 
-    this.log(act.name, 'actions', source.redo, target.redo)
-    this.doAct(source, act.name)
-    this.doAct(target, act.name)
+    this.log(name, 'actions', source.redo, target.redo)
+    this.doAct(source, name)
+    this.doAct(target, name)
 
     cUndo.push(action)
     this.log('actions undo', cUndo)

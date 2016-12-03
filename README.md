@@ -281,6 +281,11 @@ created () {
 }
 ```
 
+*Status*
+
+WIP: Needs more testing. Also needs a way to make visual (transition/animation) effects when doing undo/redo.
+Please help make this happen!
+
 ### Styling
 
 *Add handles*
