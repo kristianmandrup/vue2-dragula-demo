@@ -24,43 +24,53 @@ export class ContainerManager {
     console.log(`${this.clazzName} [${this.name}] :`, event, ...args)
   }
 
-  undo () {
-    this.log('undo')
-    let done = this.actions.done
-    let undone = this.actions.undone
-    if (!done.length) {
-      this.log('done actions empty', done)
+  // perform undo/redo on model (container)
+  doAct (container, action) {
+    let actFun = container[action]
+    if (!actFun) {
+      throw new Error(container, 'missing', action, 'method')
+    }
+    actFun()
+  }
+
+  do ({ act }) {
+    this.log(act.name)
+    let cDo = act.container.do
+    let cUndo = act.container.undo
+    if (!cDo.length) {
+      this.log('actions empty', cDo)
       return
     }
-    let action = done.pop()
+    let action = cDo.pop()
     let { models } = action
     let { source, target } = models
 
-    this.log('undo actions', source.redo, target.redo)
-    source.undo()
-    target.undo()
-    undone.push(action)
-    this.log('actions undone', undone)
+    this.log(act.name, 'actions', source.redo, target.redo)
+    this.doAct(source, act.name)
+    this.doAct(target, act.name)
+
+    cUndo.push(action)
+    this.log('actions undo', cUndo)
+  }
+
+  undo () {
+    this.do({
+      name: 'undo',
+      container: {
+        do: this.actions.done,
+        undo: this.actions.undone
+      }
+    })
   }
 
   redo () {
-    this.log('redo')
-    let done = this.actions.done
-    let undone = this.actions.undone
-    if (!undone.length) {
-      this.log('undone actions empty', undone)
-      return
-    }
-    let action = undone.pop()
-    let { models } = action
-    let { source, target } = models
-
-    this.log('redo actions', source.redo, target.redo)
-    source.redo()
-    target.redo()
-
-    done.push(action)
-    this.log('actions done', done)
+    this.do({
+      name: 'redo',
+      container: {
+        do: this.actions.undone,
+        undo: this.actions.done
+      }
+    })
   }
 
   act ({ name, models, indexes }) {
