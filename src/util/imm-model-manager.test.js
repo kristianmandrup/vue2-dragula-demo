@@ -169,6 +169,3 @@ test('timeTravel (index)', t => {
   t.deepEqual(firstModel.model, firstStep.model)
 })
 
-
-
-// ...

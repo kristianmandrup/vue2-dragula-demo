@@ -19,6 +19,16 @@ export default class ImmutableModelManager extends ModelManager {
     return this.constructor.name || 'ImmutableModelManager'
   }
 
+  undo () {
+    this.timeMachine.undo()
+    return this
+  }
+
+  redo () {
+    this.timeMachine.undo()
+    return this
+  }
+
   addToHistory (model) {
     this.timeMachine.addToHistory(model)
     return this
@@ -86,7 +96,6 @@ export default class ImmutableModelManager extends ModelManager {
       dragIndex,
       dropIndex
     })
-    // HARD undo!?
     this.timeMachine.undo()
     return this
   }

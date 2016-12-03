@@ -27,6 +27,7 @@
 </template>
 <script>
 import ImmutableModelManager from '../util/imm-model-manager'
+import ContainerManager from '../util/container-manager'
 
 const log = console.log
 
@@ -43,59 +44,19 @@ export default {
         'This is the default use case. You only need to specify the containers you want to use',
         'More interactive use cases lie ahead',
         'Another message'
-      ],
-      actions: {
-        // stack of actions to undo
-        done: [],
-        // stack of actions undone to be redone(via. redo)
-        undone: []
-      }
+      ]
     }
   },
 
   methods: {
     undo () {
-      console.log('undo')
-      let done = this.actions.done
-      let undone = this.actions.undone
-      if (!done.length) {
-        console.log('done actions empty', done)
-        return
-      }
-      let action = done.pop()
-      let { models } = action
-      let { source, target } = models
-
-      log('undo actions', source.redo, target.redo)
-      source.undo()
-      target.undo()
-      undone.push(action)
-      log('actions undone', undone)
+      this.containerManager.undo()
     },
     redo () {
-      console.log('redo')
-      let done = this.actions.done
-      let undone = this.actions.undone
-      if (!undone.length) {
-        console.log('undone actions empty', undone)
-        return
-      }
-      let action = undone.pop()
-      let { models } = action
-      let { source, target } = models
-
-      log('redo actions', source.redo, target.redo)
-      source.redo()
-      target.redo()
-
-      done.push(action)
-      log('actions done', done)
+      this.containerManager.redo()
     },
-    inserted ({ name, models, indexes }) {
-      this.actions.done.push({
-        models,
-        indexes
-      })
+    insert (action) {
+      this.containerManager.inserted(action)
     }
   },
 
@@ -122,6 +83,10 @@ export default {
       }
     })
 
+    this.containerManager = new ContainerManager({
+      logging: true
+    })
+
     // See: https://github.com/bevacqua/dragula#drakeon-events
     service.on({
       // in response to dragula.on('remove')
@@ -136,7 +101,7 @@ export default {
       'effects:insertAt': ({name, indexes, models}) => {
         log('HANDLE effects:insertAt: ', indexes, models)
         // add model history actions for local actions history navigation
-        this.inserted({
+        this.insert({
           name,
           models,
           indexes

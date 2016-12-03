@@ -150,11 +150,25 @@ An action consists of:
 - `targetModel` destination list
 - `transitModel` item (or list) in transition from source to target
 
+These params are also grouped for the `insertAt` event:
+
+```js
+models: {
+  source,
+  target,
+  transit
+},
+indexes: {
+  drag,
+  drop
+}
+```
+
 The event handlers `insertAt` and `dropModel` can be used to manage the action history.
 `insertAt` looks like the best candidate as it has access to all the action information.
 
 ```js
-'effects:insertAt': ({dragIndex, dropIndex, sourceModel, targetModel, transitModel}) => {
+'effects:insertAt': ({dragIndex, indexes, models}) => {
 
 },
 
@@ -182,6 +196,57 @@ The key method is the `timeTravel` method shown here, which sets the `modelRef` 
     this.modelRef = this.model
     return this
   }
+```
+
+The `ContainerManager` can be used to manage the done and undone actions on the containers (and models) of the VM.
+
+```js
+  created () {
+    // ...
+
+    this.containerManager = new ContainerManager({
+      logging: true
+    })
+    // ...
+  }
+```
+
+We then hook the `containerManager` to some VM methods
+
+```js
+  methods: {
+    undo () {
+      this.containerManager.undo()
+    },
+    redo () {
+      this.containerManager.redo()
+    },
+    act (action) {
+      this.containerManager.act(action)
+    }
+  },
+```
+
+The `insertAt` event handler then performs a given action.
+
+```js
+  'effects:insertAt': ({dragIndex, indexes, models}) => {
+    this.act({
+      name,
+      models,
+      indexes
+    })
+
+  },
+```
+
+The template includes buttons to trigger `undo` and `redo` of those actions via the `containerManager`.
+
+```html
+  <div class="actions">
+    <button @click="undo">undo</button>
+    <button @click="redo">redo</button>
+  </div>
 ```
 
 
