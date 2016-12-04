@@ -21,7 +21,7 @@
       <div class="actions">
         <button @click="undo">undo</button>
         <button @click="redo">redo</button>
-        <button @click="setRandom">setRandom</button>
+        <button @click="setRandom">generate</button>
       </div>
     </div>
   </section>

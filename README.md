@@ -160,14 +160,19 @@ models: {
 indexes: {
   drag,
   drop
+},
+elements: {
+  source, // container
+  target, // container
+  drop // element being dropped/inserted
 }
 ```
 
 The event handlers `insertAt` and `dropModel` can be used to manage the action history.
-`insertAt` looks like the best candidate as it has access to all the action information.
+`insertAt` is the best candidate, as it has access to all the action information.
 
 ```js
-'effects:insertAt': ({dragIndex, indexes, models}) => {
+'effects:insertAt': ({indexes, models, elements}) => {
 
 },
 
@@ -175,24 +180,20 @@ The event handlers `insertAt` and `dropModel` can be used to manage the action h
 }
 ```
 
-Currently the `ImmModelManager` contains all the history methods/tracking but we need to use this in the VM itself.
-Both the `sourceModel` and `targetModel` have a history, so we can undo on both and update the VM models to reflect
-these. The VM/drake model references are encapsulated by the `ImmModelManager` of `source-` and `targetModel` as `modelRef`.
-
-We should thus be able to do:
-
-`this.modelRef = this.model` for `sourcModel` and `targetModel` after `undo`/`redo` on each, in order to change the VM models
-and have the UI change to reflect that change.
+The `ImmModelManager` contains all the history methods/tracking but we need to use this in the VM itself.
+Both the `sourceModel` and `targetModel` have a history, so we can undo both and update the VM models to reflect it.
+The VM/drake model references are encapsulated by the `ImmModelManager` as `modelRef` for both `source` and `target` models.
 
 `ImmModelManager` uses a `TimeMachine` to manage history and handle time transitions.
-The key method is the `timeTravel` method shown here, which sets the `modelRef` accordingly.
-`timeTravel` is used internally by both `undo` and `redo`.
+The key method is `timeTravel` method shown here, which sets the `modelRef` via `updateModelRef()`.
+`timeTravel` is used internally by both `undo` and `redo`. Note that `updateModelRef` is also called internally by
+`insertAt` and `removeAt` to ensure `modelRef` is always in sync.
 
 ```js
   timeTravel (index) {
     this.log('timeTravel to', index)
     this.model = this.history[index]
-    this.modelRef = this.model
+    this.updateModelRef()
     return this
   }
 ```
@@ -210,7 +211,17 @@ The `actionManager` can be used to manage the done and undone actions on the con
   }
 ```
 
-We then hook the `actionManager` to some VM methods
+You can add an `onUndo` and `onRedo` handler as follows:
+
+```js
+this.actionManager.onUndo((action) => {
+  let { models, indexes, elements } = action
+  log('onUndo', action, models, indexes, elements)
+  // ...
+})
+```
+
+In the example we hook the `actionManager` to some VM methods
 
 ```js
   methods: {
@@ -226,10 +237,10 @@ We then hook the `actionManager` to some VM methods
   },
 ```
 
-The `insertAt` event handler then performs a given action.
+The `insertAt` event handler performs a given action via the VM `act` method.
 
 ```js
-  'effects:insertAt': ({dragIndex, indexes, models}) => {
+  'effects:insertAt': ({indexes, models, elements}) => {
     this.act({
       name,
       models,
@@ -245,6 +256,7 @@ The template includes buttons to trigger `undo` and `redo` of those actions via 
   <div class="actions">
     <button @click="undo">undo</button>
     <button @click="redo">redo</button>
+    <button @click="setRandom">generate</button>
   </div>
 ```
 
