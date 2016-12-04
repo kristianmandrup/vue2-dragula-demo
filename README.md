@@ -281,9 +281,9 @@ created () {
 }
 ```
 
-*Status*
+*Status* All test pass :)
 
-WIP: Needs more testing. Also needs a way to make visual (transition/animation) effects when doing undo/redo.
+We now just need to add some nice visual (transition/animation) effects when doing undo/redo.
 Please help make this happen!
 
 ### Styling
