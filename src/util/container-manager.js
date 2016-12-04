@@ -24,9 +24,15 @@ export default class ContainerManager {
     console.log(`${this.clazzName} [${this.name}] :`, event, ...args)
   }
 
+  clear () {
+    this.actions.done = []
+    this.actions.undone = []
+  }
+
   // perform undo/redo on model (container)
   doAct (container, action) {
-    let actFun = container[action]
+    let actFun = container[action].bind(container)
+    // this.log('doAct', actFun, container, action)
     if (!actFun) {
       throw new Error(container, 'missing', action, 'method')
     }
@@ -34,23 +40,23 @@ export default class ContainerManager {
   }
 
   do ({name, container}) {
-    this.log(name)
+    // this.log(name)
     let cDo = container.do
     let cUndo = container.undo
     if (!cDo.length) {
-      this.log('actions empty', cDo)
+      // this.log('actions empty', cDo)
       return
     }
     let action = cDo.pop()
     let { models } = action
     let { source, target } = models
 
-    this.log(name, 'actions', source.redo, target.redo)
+    // this.log(name, 'actions', source, target)
     this.doAct(source, name)
     this.doAct(target, name)
 
     cUndo.push(action)
-    this.log('actions undo', cUndo)
+    // this.log('actions undo', cUndo)
   }
 
   undo () {

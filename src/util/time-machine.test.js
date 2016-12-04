@@ -43,7 +43,7 @@ test('undo', t => {
   tm.addToHistory([0, 1, 2])
   let undotm = tm.undo()
   log('undo model', undotm)
-  t.deepEqual(undotm, initialModel)
+  t.deepEqual(undotm.model, initialModel)
 })
 
 test('redo', t => {

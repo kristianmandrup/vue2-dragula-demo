@@ -57,6 +57,11 @@ const actions = [
   }
 ]
 
+test.afterEach(t => {
+  cm.clear()
+})
+
+
 test('shouldLog', t => {
   t.true(cm.shouldLog, 'should log')
 })
@@ -73,35 +78,39 @@ test('undo', t => {
   cm.act(actions[0])
   let acts = cm.actions
   log('actions', acts)
+  t.is(acts.done.length, 1, 'has one done action')
+  t.is(acts.undone.length, 0, 'has no undone action')
 
   cm.undo()
-  t.is(acts.done, 0, 'has no done actions')
-  t.is(acts.undone, 1, 'has one undone action')
+  t.is(acts.done.length, 0, 'has no done actions')
+  t.is(acts.undone.length, 1, 'has one undone action')
 })
 
 test('redo', t => {
   cm.act(actions[0])
   let acts = cm.actions
   log('actions', acts)
+  t.is(acts.done.length, 1, 'has one done action')
+  t.is(acts.undone.length, 0, 'has no undone action')
 
   cm.undo()
-  t.is(acts.done, 0, 'has no done actions')
-  t.is(acts.undone, 1, 'has one undone action')
+  t.is(acts.done.length, 0, 'has no done actions')
+  t.is(acts.undone.length, 1, 'has one undone action')
 
   cm.redo()
   t.is(acts.done.length, 1, 'has one done action')
-  t.is(acts.undone.length, 0, 'has no undo actions')
+  t.is(acts.undone.length, 0, 'has no undone actions')
 
   cm.act(actions[1])
   t.is(acts.done.length, 2, 'has two done actions')
-  t.is(acts.undone.length, 1, 'has one undone action')
+  t.is(acts.undone.length, 0, 'has no undone action')
 
   cm.undo()
   t.is(acts.done.length, 1, 'has one done action')
-  t.is(acts.undone.length, 0, 'has no undo actions')
+  t.is(acts.undone.length, 1, 'has one undone action')
 
   cm.redo()
   t.is(acts.done.length, 2, 'has two done actions')
-  t.is(acts.undone.length, 1, 'has one undone action')
+  t.is(acts.undone.length, 0, 'has no undone action')
 })
 

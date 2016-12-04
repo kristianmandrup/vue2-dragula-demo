@@ -23,13 +23,27 @@ export default class ImmutableModelManager extends ModelManager {
     return this.timeMachine ? this.timeMachine.model : this._model
   }
 
+  get history () {
+    return this.timeMachine.history
+  }
+
+  get timeIndex () {
+    return this.timeMachine.timeIndex
+  }
+
+  timeTravel (index) {
+    return this.timeMachine.timeTravel(index)
+  }
+
   undo () {
+    // this.log('UNDO', this.timeMachine)
     this.timeMachine.undo()
     return this
   }
 
   redo () {
-    this.timeMachine.undo()
+    // this.log('REDO', this.timeMachine)
+    this.timeMachine.redo()
     return this
   }
 

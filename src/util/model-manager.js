@@ -50,7 +50,7 @@ export class ModelManager {
   }
 
   clear () {
-    this.model = this.createModel()
+    this._model = this.createModel()
   }
 
   createModel (model) {
