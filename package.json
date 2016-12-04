@@ -35,12 +35,14 @@
     "babel": "inherit"
   },
   "dependencies": {
+    "lodash": "^4.17.2",
     "seamless-immutable": "^6.3.0",
     "standard": "^8.5.0",
     "vue": "^2.0.5",
     "vue-material": "^0.3.0",
     "vue-router": "^2.0.2",
-    "vue2-dragula": "kristianmandrup/vue2-dragula#master"
+    "vue2-dragula": "kristianmandrup/vue2-dragula#master",
+    "xfaker": "^3.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",

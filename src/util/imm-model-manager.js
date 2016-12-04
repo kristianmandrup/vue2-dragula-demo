@@ -9,9 +9,11 @@ const createDefaultTimeMachine = function (opts) {
 export default class ImmutableModelManager extends ModelManager {
   constructor (opts = {}) {
     super(opts)
+    this.timeOut = opts.timeOut || 800
     let createTimeMachine = opts.createTimeMachine || createDefaultTimeMachine
     this.timeMachine = createTimeMachine(Object.assign(opts, {
-      model: this.model
+      model: this.model,
+      modelRef: this.modelRef
     }))
   }
 
@@ -78,6 +80,12 @@ export default class ImmutableModelManager extends ModelManager {
     return this.at(this.model.length - 1)
   }
 
+  actionUpdateModel (newModel) {
+    setTimeout(() => {
+      this.addToHistory(newModel)
+    }, this.timeOut || 800)
+  }
+
   removeAt (index) {
     this.log('removeAt', {
       model: this.model,
@@ -90,7 +98,8 @@ export default class ImmutableModelManager extends ModelManager {
     this.log('removeAt: concat', before, exclAfter)
     const newModel = this.createModel().concat(before, exclAfter)
 
-    return this.addToHistory(newModel)
+    this.actionUpdateModel(newModel)
+    return newModel
   }
 
   insertAt (index, dropModel) {
@@ -105,7 +114,9 @@ export default class ImmutableModelManager extends ModelManager {
     this.log('insertAt: concat', before, dropModel, inclAfter)
 
     const newModel = this.createModel().concat(before, dropModel, inclAfter)
-    return this.addToHistory(newModel)
+
+    this.actionUpdateModel(newModel)
+    return newModel
   }
 
   move ({dragIndex, dropIndex}) {

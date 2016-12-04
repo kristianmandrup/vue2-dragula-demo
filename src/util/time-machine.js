@@ -1,7 +1,8 @@
 export class TimeMachine {
-  constructor ({name, model, history, logging}) {
+  constructor ({name, model, modelRef, history, logging}) {
     this.name = name || 'default'
     this.model = model
+    this.modelRef = modelRef
     this.logging = logging
     this.history = history || this.createHistory()
     this.history.push(this.model)
@@ -28,8 +29,17 @@ export class TimeMachine {
   timeTravel (index) {
     this.log('timeTravel to', index)
     this.model = this.history[index]
-    this.modelRef = this.model
+    this.updateModelRef()
     return this
+  }
+
+  updateModelRef () {
+    // this.modelRef = mutable
+    // this.log('set modelRef', this.modelRef, this.model)
+    this.modelRef.splice(0, this.modelRef.length)
+    for (let item of this.model) {
+      this.modelRef.push(item)
+    }
   }
 
   undo () {
@@ -53,11 +63,14 @@ export class TimeMachine {
   }
 
   addToHistory (newModel) {
-    this.log('addToHistory: old', this.model, 'new', newModel)
+    this.log('addToHistory')
+    this.log('old', this.model)
+    this.log('new', newModel)
     this.model = newModel
     this.log('model was set to', this.model)
     this.history.push(newModel)
     this.timeIndex++
+    this.updateModelRef()
     return this
   }
 }

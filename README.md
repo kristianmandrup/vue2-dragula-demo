@@ -13,11 +13,10 @@ This branch is trying to add an example for how to create a *Custom Model Manage
 - `imm-model-manager.test.js` (using `ava` test runner)
 - `model-manager.js` same as in vue2-dragula
 
-The undo seems to be working partly, but the UI doesn't reflect it, so...
-Also the undo/redo should affect both the source and target models.
-Likely we need to perform undo or redo on both models to keep in sync!
+*Status* All test pass and undo/redo works :)
 
-Any help on adding this feature would be greatly appreciated!!
+Bonus if you can add some nice visual (transition/animation) effects when doing undo/redo.
+Please help make this happen!
 
 ## Build Setup
 
@@ -249,6 +248,41 @@ The template includes buttons to trigger `undo` and `redo` of those actions via 
   </div>
 ```
 
+*Notice*
+
+If you check the log, you will see that for `TimeMachine [...] set modelRef` it sets the VM model containers
+back to their original on `undo` but the UI doesn't reflect this (Array pointer) update.
+What to do to make the UI respond to this change!?
+
+`v-for="text in colOne"` needs to be forced to re-iterate somehow, see [Vue2 list rendering](https://vuejs.org/v2/guide/list.html).
+and see [sorting](http://arrayy.com/make-vuejs-vfor-directive-sortable.html)
+
+"To work around this problem we need to add a unique identifier to our array items, and then bind this identifier to key property in our HTML."
+
+Vue wraps an observed array’s mutation methods so they will also trigger view updates.
+Vue implements some smart heuristics to maximize DOM element reuse, so replacing an array with another array containing overlapping objects is a very efficient operation.
+See also [list caveats](https://vuejs.org/v2/guide/list.html#Caveats)
+
+```js
+  timeTravel (index) {
+    this.log('timeTravel to', index)
+    this.model = this.history[index]
+
+    // this.modelRef = mutable
+    // this.log('set modelRef', this.modelRef, this.model)
+    this.modelRef.splice(0, this.modelRef.length)
+    for (let item of this.model) {
+      this.modelRef.push(item)
+    }
+
+    return this
+  }
+```
+
+Let us know if you know/find a better, simpler or more efficient way to correctly trigger Vue2 to notice that
+the Array has been updated and update the VDOM + re-iterate the `v-for` in the template/view.
+
+You can experiment in `setRandom` of the VM which uses the same strategy.
 
 ### Dragula Service pre-configuration
 
@@ -280,11 +314,6 @@ created () {
   })
 }
 ```
-
-*Status* All test pass :)
-
-We now just need to add some nice visual (transition/animation) effects when doing undo/redo.
-Please help make this happen!
 
 ### Styling
 

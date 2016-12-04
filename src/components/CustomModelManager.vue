@@ -5,15 +5,15 @@
         <label>Custom Model Manager example</label>
         <div class="wrapper">
           <div id="first" class="container" v-dragula="colOne" service="effects">
-            <div v-for="text in colOne">
+            <div v-for="item in colOne" :key="item.key">
               <span class="handle">+</span>
-              <span>{{text}}</text>
+              <span>{{item.text}}</text>
             </div>
           </div>
           <div id="second" class="container" v-dragula="colTwo" service="effects">
-            <div v-for="text in colTwo">
+            <div v-for="item in colTwo">
               <span class="handle">+</span>
-              <span>{{text}}</text>
+              <span>{{item.text}}</text>
             </div>
           </div>
         </div>
@@ -21,6 +21,7 @@
       <div class="actions">
         <button @click="undo">undo</button>
         <button @click="redo">redo</button>
+        <button @click="setRandom">setRandom</button>
       </div>
     </div>
   </section>
@@ -28,6 +29,8 @@
 <script>
 import ImmutableModelManager from '../util/imm-model-manager'
 import ActionManager from '../util/action-manager'
+import faker from 'xfaker'
+import _ from 'lodash'
 
 const log = console.log
 
@@ -36,14 +39,32 @@ export default {
   data () {
     return {
       colOne: [
-        'You can move these elements between these two containers',
-        'Moving them anywhere else isn"t quite possible',
-        'There"s also the possibility of moving elements around in the same container, changing their position'
+        {
+          text: 'You can move these elements between these two containers',
+          key: 0
+        },
+        {
+          text: 'Moving them anywhere else isn"t quite possible',
+          key: 1
+        },
+        {
+          text: 'There"s also the possibility of moving elements around in the same container, changing their position',
+          key: 2
+        }
       ],
       colTwo: [
-        'This is the default use case. You only need to specify the containers you want to use',
-        'More interactive use cases lie ahead',
-        'Another message'
+        {
+          text: 'This is the default use case. You only need to specify the containers you want to use',
+          key: 3
+        },
+        {
+          text: 'More interactive use cases lie ahead',
+          key: 4
+        },
+        {
+          text: 'Another message',
+          key: 5
+        }
       ]
     }
   },
@@ -57,6 +78,36 @@ export default {
     },
     act (action) {
       this.actionManager.act(action)
+    },
+    setRandom () {
+      let firstAction = this.actionManager.actions.done[0]
+      if (!firstAction) return
+      let source = firstAction.models.source
+
+      function randNum (max) {
+        return faker.random.number({min: 1, max: max || 5})
+      }
+
+      function item () {
+        return {
+          text: faker.lorem.words(randNum(10)),
+          key: randNum(9999)
+        }
+      }
+
+      // random text and keys
+      let randList = _.times(randNum(6), item)
+
+      log('set source model to random list', randList)
+
+      source.modelRef.splice(0, source.modelRef.length)
+      for (let item of randList) {
+        source.modelRef.push(item)
+      }
+      log('new modelRef', source.modelRef)
+      // this.colTwo = source.modelRef
+      // source._model = randList
+      // source.timeMachine.model = randList
     }
   },
 
@@ -79,7 +130,7 @@ export default {
         service: false
       },
       drake: {
-        copy: true
+        copy: false
       }
     })
 
