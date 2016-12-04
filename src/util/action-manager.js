@@ -1,7 +1,13 @@
-export default class ContainerManager {
+export default class ActionManager {
   constructor (opts = {}) {
     this.name = opts.name || 'default'
     this.logging = opts.logging
+    this.observer = {
+      undo: function (action) {
+      },
+      redo: function (action) {
+      }
+    }
 
     this.actions = {
       // stack of actions to undo
@@ -12,7 +18,7 @@ export default class ContainerManager {
   }
 
   get clazzName () {
-    return this.constructor.name || 'ContainerManager'
+    return this.constructor.name || 'ActionManager'
   }
 
   get shouldLog () {
@@ -58,8 +64,23 @@ export default class ContainerManager {
     this.doAct(source, name)
     this.doAct(target, name)
 
+    this.emitAction(name, action)
+
     cUndo.push(action)
     // this.log('actions undo', cUndo)
+  }
+
+  emitAction (name, action) {
+    let fun = this.observer[name]
+    if (typeof fun === 'function') fun(action)
+  }
+
+  onUndo (fun) {
+    this.observer.undo = fun
+  }
+
+  onRedo (fun) {
+    this.observer.redo = fun
   }
 
   undo () {

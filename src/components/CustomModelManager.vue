@@ -27,7 +27,7 @@
 </template>
 <script>
 import ImmutableModelManager from '../util/imm-model-manager'
-import ContainerManager from '../util/container-manager'
+import ActionManager from '../util/action-manager'
 
 const log = console.log
 
@@ -50,13 +50,13 @@ export default {
 
   methods: {
     undo () {
-      this.containerManager.undo()
+      this.actionManager.undo()
     },
     redo () {
-      this.containerManager.redo()
+      this.actionManager.redo()
     },
     act (action) {
-      this.containerManager.act(action)
+      this.actionManager.act(action)
     }
   },
 
@@ -83,8 +83,19 @@ export default {
       }
     })
 
-    this.containerManager = new ContainerManager({
+    this.actionManager = new ActionManager({
       logging: true
+    })
+
+    // custom action handlers to activate after undo/redo
+    this.actionManager.onUndo((action) => {
+      let { models, indexes, elements } = action
+      log('onUndo', action, models, indexes, elements)
+    })
+
+    this.actionManager.onRedo((action) => {
+      let { models, indexes, elements } = action
+      log('onRedo', action, models, indexes, elements)
     })
 
     // See: https://github.com/bevacqua/dragula#drakeon-events
@@ -107,7 +118,7 @@ export default {
           indexes,
           elements
         })
-        log('containerManager actions', this.containerManager.actions)
+        log('actionManager actions', this.actionManager.actions)
       },
 
       // TODO: the incoming model should be added to local history

@@ -198,31 +198,31 @@ The key method is the `timeTravel` method shown here, which sets the `modelRef` 
   }
 ```
 
-The `ContainerManager` can be used to manage the done and undone actions on the containers (and models) of the VM.
+The `actionManager` can be used to manage the done and undone actions on the containers (and models) of the VM.
 
 ```js
   created () {
     // ...
 
-    this.containerManager = new ContainerManager({
+    this.actionManager = new actionManager({
       logging: true
     })
     // ...
   }
 ```
 
-We then hook the `containerManager` to some VM methods
+We then hook the `actionManager` to some VM methods
 
 ```js
   methods: {
     undo () {
-      this.containerManager.undo()
+      this.actionManager.undo()
     },
     redo () {
-      this.containerManager.redo()
+      this.actionManager.redo()
     },
     act (action) {
-      this.containerManager.act(action)
+      this.actionManager.act(action)
     }
   },
 ```
@@ -240,7 +240,7 @@ The `insertAt` event handler then performs a given action.
   },
 ```
 
-The template includes buttons to trigger `undo` and `redo` of those actions via the `containerManager`.
+The template includes buttons to trigger `undo` and `redo` of those actions via the `actionManager`.
 
 ```html
   <div class="actions">
