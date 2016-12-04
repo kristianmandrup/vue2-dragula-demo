@@ -98,13 +98,14 @@ export default {
       },
 
       // TODO: enable undo/redo by keeping track of indexes
-      'effects:insertAt': ({name, indexes, models}) => {
-        log('HANDLE effects:insertAt: ', indexes, models)
+      'effects:insertAt': ({name, indexes, models, elements}) => {
+        log('HANDLE effects:insertAt: ', indexes, models, elements)
         // add model history actions for local actions history navigation
         this.act({
           name,
           models,
-          indexes
+          indexes,
+          elements
         })
         log('containerManager actions', this.containerManager.actions)
       },

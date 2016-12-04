@@ -48,7 +48,10 @@ export default class ContainerManager {
       return
     }
     let action = cDo.pop()
+    // TODO: use elements, indexes to create visual transition/animation effect
     let { models } = action
+    this.log(name, action)
+
     let { source, target } = models
 
     // this.log(name, 'actions', source, target)
@@ -79,10 +82,11 @@ export default class ContainerManager {
     })
   }
 
-  act ({ name, models, indexes }) {
+  act ({ name, models, indexes, elements }) {
     this.actions.done.push({
       models,
-      indexes
+      indexes,
+      elements
     })
   }
 }
