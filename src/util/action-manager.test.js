@@ -1,8 +1,8 @@
 import test from 'ava'
-import ContainerManager from './container-manager'
+import ActionManager from './action-manager'
 
 const createIt = (opts = {}) => {
-  return new ContainerManager(opts)
+  return new ActionManager(opts)
 }
 
 const logging = true
