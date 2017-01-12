@@ -12,10 +12,12 @@ import './assets/styles.css'
 
 Vue.use(VueMaterial)
 
-Vue.material.theme.register('default', {
+Vue.material.registerTheme('default', {
   primary: 'cyan',
   accent: 'pink'
 })
+
+Vue.material.setCurrentTheme('default')
 
 console.log('VueDragula', Vue2Dragula)
 console.log('router', router)

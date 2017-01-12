@@ -1,5 +1,5 @@
 <template>
-  <section class="examples" v-md-theme="'default'">
+  <section class="examples">
     <nav id="navigation">
       <md-toolbar class="md-medium">
         <div class="md-toolbar-container">
