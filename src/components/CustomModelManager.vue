@@ -123,11 +123,11 @@ export default {
       name: 'effects',
       createModelManager,
       logging: {
-        directive: false,
-        plugin: false,
+        directive: true,
+        plugin: true,
         modelManager: true,
         dragHandler: false,
-        service: false
+        service: true
       },
       drake: {
         copy: false

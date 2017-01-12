@@ -8,7 +8,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('routing -> ', to, from)
+  console.log('route -> ', to, from)
   next()
 })
 
