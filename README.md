@@ -25,7 +25,7 @@ Please help make this happen!
 npm install
 
 # serve with hot reload at localhost:8080
-npm run dev
+npm start
 
 # build for production with minification
 npm run build
@@ -63,7 +63,7 @@ Styling has not yet been prioritized much. Please help out make the demo look be
 
 - `Home` brief overview of the examples
 - `GlobalService` use of global app service
-- `NamedServices` named services
+- `NamedServices` named services with `copy: true`
 - `DragEffects` drag effects on a named service
 - `CustomModelManager` immutable model manager with time travel
 
