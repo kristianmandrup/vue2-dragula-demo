@@ -1,22 +1,6 @@
 # Dragula for Vue2 via vue-dragula
 
-> A Vue.js demo app to demonstrate how to use [Dragula](https://bevacqua.github.io/dragula/) with [Vue 2](https://vuex.vuejs.org) for drag and drop.
-
-### Status: Time travel
-
-Demo app which demonstrates how to use the new [vue2-dragula](https://github.com/kristianmandrup/vue2-dragula) plugin.
-See more info in plugin Readme and in the sections below.
-
-This branch is trying to add an example for how to create a *Custom Model Manager* which uses an Immutable Array that keeps a history of previous state so you can undo/redo. Please see the `src/util` folder:
-
-- `imm-model-manager.js` custom model manger using immutable Array
-- `imm-model-manager.test.js` (using `ava` test runner)
-- `model-manager.js` same as in vue2-dragula
-
-*Status* All test pass and undo/redo works :)
-
-Bonus if you can add some nice visual (transition/animation) effects when doing undo/redo.
-Please help make this happen!
+> A Vue.js demo app which demonstrates how to use [Dragula](https://bevacqua.github.io/dragula/) with [Vue 2](https://vuex.vuejs.org) for drag and drop. Includes Time Travel demo (undo/redo) in *Named service* example.
 
 ## Build Setup
 
@@ -40,11 +24,17 @@ npm run e2e
 npm test
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/)
-and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## TODO
+- transitions
+
+### Transitions
+Would be nice to add support for Vue [transition groups](https://vuejs.org/v2/guide/transitions.html#List-Move-Transitions) as per discussions in this [issue](https://github.com/kristianmandrup/vue2-dragula/issues/7)
+
+[jsFiddle Demo - single list w transitions](https://jsfiddle.net/av1jLfn8/)
 
 ### Development
-
 To help improve the plugin, please do the following:
 - fork [vue2-dragula](https://github.com/kristianmandrup/vue2-dragula) and clone it to local disk
 - from within the root of `/vue2-dragula` run `npm link` to make a symbolic global link to this package
@@ -82,17 +72,14 @@ Register the component in `/components/index.js` and update the main navigation 
 link to your example route.
 
 ### Bugs and issues
-
 Please report [bugs or issues](https://github.com/kristianmandrup/vue2-dragula)
 
 ## Using v-dragula directive
-
 - `v-dragula` directive on an element must point to an underlying data model (`Array`) in the VM.
 - `service` attribute specifies a registered `DragulaService`
 - `drake` attribute to use a specific named drake configuration registered on the service
 
 ### Global app service example
-
 If you don't specify a service the global application level dragula service `$dragula.$service` will be used
 
 ```html
@@ -107,7 +94,6 @@ If you don't specify a service the global application level dragula service `$dr
 ```
 
 ### Named services
-
 DOM element containers can be configured to use specific named services:
 
 ```html
@@ -132,14 +118,19 @@ You can use the `default` drake by not setting the `drake` attribute.
 ```
 
 ### Custom Model Manager with Time Travel
+Time travel uses the following classes
+- `ImmutableModelManager`
+- `TimeMachine`
+- `ActionManager`
 
-Uses [seamless-immutable](https://www.npmjs.com/package/seamless-immutable) which contains Immutable data structures for JavaScript which are backwards-compatible with normal JS Arrays and Objects.
+`ImmutableModelManager` uses [seamless-immutable](https://www.npmjs.com/package/seamless-immutable) which contains Immutable data structures for JavaScript which are backwards-compatible with normal JS Arrays and Objects.
 
 Implements basic Time Travel with undo/redo back and forward in model history.
 Play with it and have fun!
 
 The difference for the immutable collections is that methods which would mutate the collection, like `push`, `set`, `unshift` or `splice` instead return a new immutable collection.
 Methods which return new arrays like `slice` or `concat` also return new immutable collections.
+
 The local VM should maintain a history of transactions that can be undone.
 
 An action consists of:
@@ -262,8 +253,7 @@ The template includes buttons to trigger `undo` and `redo` of those actions via 
 
 *Notice*
 
-If you check the log, you will see that for `TimeMachine [...] set modelRef` it sets the VM model containers
-back to their original on `undo` but the UI doesn't reflect this (Array pointer) update.
+If you check the log, you will see that for `TimeMachine [...] set modelRef` it sets the VM model containers back to their original on `undo` but the UI doesn't reflect this (Array pointer) update.
 What to do to make the UI respond to this change!?
 
 `v-for="text in colOne"` needs to be forced to re-iterate somehow, see [Vue2 list rendering](https://vuejs.org/v2/guide/list.html).
@@ -272,7 +262,9 @@ and see [sorting](http://arrayy.com/make-vuejs-vfor-directive-sortable.html)
 "To work around this problem we need to add a unique identifier to our array items, and then bind this identifier to key property in our HTML."
 
 Vue wraps an observed array’s mutation methods so they will also trigger view updates.
+
 Vue implements some smart heuristics to maximize DOM element reuse, so replacing an array with another array containing overlapping objects is a very efficient operation.
+
 See also [list caveats](https://vuejs.org/v2/guide/list.html#Caveats)
 
 ```js
@@ -291,14 +283,12 @@ See also [list caveats](https://vuejs.org/v2/guide/list.html#Caveats)
   }
 ```
 
-Let us know if you know/find a better, simpler or more efficient way to correctly trigger Vue2 to notice that
-the Array has been updated and update the VDOM + re-iterate the `v-for` in the template/view.
+Let us know if you know/find a better, simpler or more efficient way to correctly trigger Vue2 to notice that the Array has been updated and update the VDOM + re-iterate the `v-for` in the template/view.
 
 You can experiment in `setRandom` of the VM which uses the same strategy.
 
 ### Dragula Service pre-configuration
-
-Always pre-configure named services with drakes in the `created` life cycle hook method of the VM.
+*Important* Always pre-configure named services with drakes in the `created` life cycle hook method of the VM.
 
 ```js
 created () {
@@ -349,7 +339,6 @@ Add a black border effect on `:hover` over draggable child elements of a `drake`
 ```
 
 ### UX effects via event handlers
-
 Add/Remove DOM element style classes as UX effects for drag'n drop events.
 Here using [classList](https://developer.mozilla.org/en/docs/Web/API/Element/classList)
 
@@ -424,6 +413,7 @@ Note that `assets/styles.css` contains most of the styling used, primarily this 
 Tip: Please add more examples showcasing dynamic styling and transition effects to better visualize the drag and drop actions/events ;)
 
 ### Configuring dragula options
+Dragula includes loads of options you can use to fine tune the Dnd behaviour.
 
 ```js
 dragula(containers, {
@@ -450,7 +440,8 @@ dragula(containers, {
 ```
 
 Let us know if this demo helps you and what you build with this example as your foundation.
-Feel free to improve and come with suggestions :)
+
+Feel free to improve it or come with suggestions for new features etc :)
 
 **Enjoy!!!**
 
@@ -458,4 +449,3 @@ Feel free to improve and come with suggestions :)
 
 MIT
 
-(c) Kristian Mandrup 2016
