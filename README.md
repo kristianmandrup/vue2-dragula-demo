@@ -30,9 +30,13 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 - transitions
 
 ### Transitions
-Would be nice to add support for Vue [transition groups](https://vuejs.org/v2/guide/transitions.html#List-Move-Transitions) as per discussions in this [issue](https://github.com/kristianmandrup/vue2-dragula/issues/7)
+We would very much like to add support for Vue [transitions](https://vuejs.org/v2/guide/transitions.html) and [transition groups](https://vuejs.org/v2/guide/transitions.html#List-Move-Transitions) as per discussions in this [issue](https://github.com/kristianmandrup/vue2-dragula/issues/7)
 
-[jsFiddle Demo - single list w transitions](https://jsfiddle.net/av1jLfn8/)
+Here is a [jsFiddle Demo: single list with transitions](https://jsfiddle.net/av1jLfn8/)
+
+- [Vue reactivity in depth](https://vuejs.org/v2/guide/reactivity.html)
+
+We might need to use `Vue.set` to explicitly notify Vue that the underlying array has changed and thus activate the transition effect or change the way we update the Array in `ModelManager`. Please experiment!
 
 ### Development
 To help improve the plugin, please do the following:
@@ -42,13 +46,9 @@ To help improve the plugin, please do the following:
 
 When you make changes to the plugin, make sure you run `npm run build` in order to compile it to `/dist`.
 
-We hope to release this plugin before or in December 2016, so we urge you to try it out and
-really excercise it, in order to find any remaining bugs or parts that need improvement.
+You can also set up a watcher to auto-build on every change.
 
-For now we use [vue-material](https://marcosmoura.github.io/vue-material) and
-[vue-router](https://router.vuejs.org/en/api/route-object.html) for the navigation menu.
-Styling has not yet been prioritized much. Please help out make the demo look beautiful.
-
+## Design
 *components*
 
 - `Home` brief overview of the examples
