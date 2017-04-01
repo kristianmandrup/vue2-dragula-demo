@@ -1,5 +1,7 @@
 # Dragula for Vue2 via vue-dragula
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/vue2-dragula-demo.svg)](https://greenkeeper.io/)
+
 > A Vue.js demo app which demonstrates how to use [Dragula](https://bevacqua.github.io/dragula/) with [Vue 2](https://vuex.vuejs.org) for drag and drop. Includes Time Travel demo (undo/redo) in *Named service* example.
 
 ## Build Setup
