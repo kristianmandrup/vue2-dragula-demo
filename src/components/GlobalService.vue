@@ -10,11 +10,11 @@
           <div class="container" v-dragula="colTwo" drake="first">
             <div v-for="text in colTwo">
               <span class="handle">+</span>
-              <span>{{text}}</text>
+              <span>{{text}}</span>
             </div>
           </div>
         </div>
-        <h4>Result</h5>
+        <h4>Result</h4>
         <p>
           <h5>colOne</h5>
           <div v-for="text in colOne">{{text}}</div>

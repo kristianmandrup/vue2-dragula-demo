@@ -7,13 +7,13 @@
           <div id="first" class="container" v-dragula="colOne" service="effects">
             <div v-for="text in colOne">
               <span class="handle">+</span>
-              <span>{{text}}</text>
+              <span>{{text}}</span>
             </div>
           </div>
           <div id="second" class="container" v-dragula="colTwo" service="effects">
             <div v-for="text in colTwo">
               <span class="handle">+</span>
-              <span>{{text}}</text>
+              <span>{{text}}</span>
             </div>
           </div>
         </div>
