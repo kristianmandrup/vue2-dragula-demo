@@ -5,10 +5,10 @@
         <label>Global Service example</label>
         <div class="wrapper">
           <div class="container" v-dragula="colOne" drake="first">
-            <div v-for="text in colOne" @click="onClick">{{text}} [click me]</div>
+            <div v-for="text in colOne" :key="text" @click="onClick">{{text}} [click me]</div>
           </div>
           <div class="container" v-dragula="colTwo" drake="first">
-            <div v-for="text in colTwo">
+            <div v-for="text in colTwo" :key="text">
               <span class="handle">+</span>
               <span>{{text}}</span>
             </div>
@@ -17,12 +17,12 @@
         <h4>Result</h4>
         <p>
           <h5>colOne</h5>
-          <div v-for="text in colOne">{{text}}</div>
+          <div v-for="text in colOne" :key="text">{{text}}</div>
         </p>
 
         <p>
           <h5>colTwo</h5>
-          <div v-for="text in colTwo">{{text}}</div>
+          <div v-for="text in colTwo" :key="text">{{text}}</div>
         </p>
       </div>
     </div>
@@ -32,7 +32,7 @@
         <label>Modify items in drake with transition</label>
         <div class="wrapper" v-for="container in categories">
           <div class="container" v-dragula="container" drake="second">
-            <div v-for="number in container" transition="scale">{{number}}</div>
+            <div v-for="number in container" :key="number" transition="scale">{{number}}</div>
           </div>
         </div>
         <button @click="testModify">Modify Items</button>
@@ -44,10 +44,10 @@
         <label>Copy between containers</label>
         <div class="wrapper">
           <div class="container" v-dragula="copyOne" drake="third">
-            <div v-for="text in copyOne" track-by="$index">{{text}}</div>
+            <div v-for="text in copyOne" :key="text">{{text}}</div>
           </div>
           <div class="container" v-dragula="copyTwo" drake="third">
-            <div v-for="text in copyTwo" track-by="$index">{{text}}</div>
+            <div v-for="text in copyTwo" :key="text">{{text}}</div>
           </div>
         </div>
       </div>

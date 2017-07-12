@@ -5,13 +5,13 @@
         <label>Drag Effects Example</label>
         <div class="wrapper">
           <div id="first" class="container" v-dragula="colOne" service="effects">
-            <div v-for="text in colOne">
+            <div v-for="text in colOne" :key="text">
               <span class="handle">+</span>
               <span>{{text}}</span>
             </div>
           </div>
           <div id="second" class="container" v-dragula="colTwo" service="effects">
-            <div v-for="text in colTwo">
+            <div v-for="text in colTwo" :key="text">
               <span class="handle">+</span>
               <span>{{text}}</span>
             </div>

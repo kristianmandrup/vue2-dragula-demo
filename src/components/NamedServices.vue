@@ -5,10 +5,10 @@
         <label>Named Services example</label>
         <div class="wrapper">
           <div class="container" v-dragula="colOne" service="my-first" drake="first">
-            <div v-for="text in colOne" @click="onClick">{{text}} [click me]</div>
+            <div v-for="text in colOne" :key="text" @click="onClick">{{text}} [click me]</div>
           </div>
           <div class="container" v-dragula="colTwo" service="my-first" drake="first">
-            <div v-for="text in colTwo">
+            <div v-for="text in colTwo" :key="text">
               <span class="handle">+</span>
               <span>{{text}}</span>
             </div>
@@ -32,7 +32,7 @@
         <label>Modify items in drake with transition</label>
         <div class="wrapper" v-for="container in categories">
           <div class="container" v-dragula="container" service="my-second" drake="a">
-            <div v-for="number in container" transition="scale">{{number}}</div>
+            <div v-for="number in container" :key="number" transition="scale">{{number}}</div>
           </div>
         </div>
         <button @click="testModify">Modify Items</button>
@@ -44,10 +44,10 @@
         <label>Copy between containers</label>
         <div class="wrapper">
           <div class="container" v-dragula="copyOne" service="my-third" drake="a">
-            <div v-for="text in copyOne" track-by="$index">{{text}}</div>
+            <div v-for="text in copyOne" :key="text">{{text}}</div>
           </div>
           <div class="container" v-dragula="copyTwo" service="my-third" drake="a">
-            <div v-for="text in copyTwo" track-by="$index">{{text}}</div>
+            <div v-for="text in copyTwo" :key="text">{{text}}</div>
           </div>
         </div>
       </div>
