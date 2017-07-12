@@ -85,10 +85,10 @@ If you don't specify a service the global application level dragula service `$dr
 ```html
 <div class="wrapper">
   <div class="container" v-dragula="colOne" drake="first">
-    <div v-for="text in colOne" @click="onClick">{{text}} [click me]</div>
+    <div v-for="text in colOne" :key="text" @click="onClick">{{text}} [click me]</div>
   </div>
   <div class="container" v-dragula="colTwo" drake="first">
-    <div v-for="text in colTwo">{{text}}</div>
+    <div v-for="text in colTwo" :key="text">{{text}}</div>
   </div>
 </div>
 ```
